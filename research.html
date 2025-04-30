@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research - Cian McCarroll</title>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Spectral', serif;
+      line-height: 1.6;
+      color: #f5f5f5;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      background-color: #2a2a2a;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Spectral', serif;
+      font-weight: 500;
+      margin: 1.5rem 0 1rem 0;
+      color: #ffffff;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 2.5rem;
+      border-bottom: 1px solid #a490ff;
+      padding-bottom: 0.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 300;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid #a490ff;
+      margin-bottom: 1.5rem;
+    }
+    
+    nav a {
+      text-decoration: none;
+      color: #cccccc;
+      margin: 0 1.5rem;
+      font-size: 1.1rem;
+      transition: color 0.2s ease;
+    }
+    
+    nav a:hover {
+      color: #ffffff;
+      border-bottom: 2px solid #a490ff;
+    }
+    
+    /* Publications styles */
+    .content-container {
+      max-width: 600px;
+      margin: 0 auto 3rem auto;
+    }
+
+    .publications {
+      padding: 20px;
+    }
+
+    .publications ul {
+      list-style: none;
+    }
+
+    .publications li {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px dashed rgba(164, 144, 255, 0.3);
+    }
+
+    .publications li:last-child {
+      border-bottom: none;
+    }
+
+    .publications a {
+      color: #f5f5f5;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.2s ease;
+      line-height: 1.6;
+    }
+
+    .publications a:hover {
+      color: #a490ff;
+    }
+
+    .pdf-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #a490ff !important;
+      transition: all 0.2s ease;
+    }
+
+    .pdf-link:hover {
+      color: #ffffff !important;
+      text-decoration: underline;
+    }
+
+    /* Poster section */
+    .poster {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      max-height: 800px;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      border: 1px solid #a490ff;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      body {
+        padding: 0 15px;
+      }
+      
+      nav a {
+        margin: 0 0.8rem;
+        font-size: 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+      }
+      
+      .publications a {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="index.html">home</a>
+    <a href="research.html">research</a>
+    <a href="contact.html">contact</a>
+    <a href="other.html">other</a>
+  </nav>
+
+  <h1>Research</h1>
+
+  <p>My work explores the intersection of artificial intelligence, time economies, and urban infrastructures, with an emphasis on how autonomous systems restructure human agency and social life.</p>
+
+  <h2>Publications</h2>
+
+  <!-- Publications container -->
+  <div class="content-container">
+    <div class="publications">
+      <ul>
+        <li>
+          <a href="https://link.springer.com/article/10.1007/s00146-021-01334-6" target="_blank">"The Social Implications of Autonomous Vehicles: A Focus on Time"</a> — AI & Society, 2022  
+          <br>
+          <a class="pdf-link" href="papers/Socialimplicationsofautonomousvehicles.pdf" target="_blank">(download pdf)</a>
+        </li>
+        <li>
+          <a href="https://www.frontiersin.org/journals/sustainable-cities/articles/10.3389/frsc.2022.937933/full" target="_blank">"No City on the Horizon: Autonomous Cars, Artificial Intelligence, and the Absence of Urbanism"</a> — Frontiers in Sustainable Cities, 2022  
+          <br>
+          <a class="pdf-link" href="papers/frsc-04-937933.pdf" target="_blank">(download pdf)</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Other - Cian McCarroll</title>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Spectral', serif;
+      line-height: 1.6;
+      color: #f5f5f5;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      background-color: #2a2a2a;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Spectral', serif;
+      font-weight: 500;
+      margin: 1.5rem 0 1rem 0;
+      color: #ffffff;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 2.5rem;
+      border-bottom: 1px solid #a490ff;
+      padding-bottom: 0.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid #a490ff;
+      margin-bottom: 1.5rem;
+    }
+    
+    nav a {
+      text-decoration: none;
+      color: #cccccc;
+      margin: 0 1.5rem;
+      font-size: 1.1rem;
+      transition: color 0.2s ease;
+    }
+    
+    nav a:hover {
+      color: #ffffff;
+      border-bottom: 2px solid #a490ff;
+    }
+    
+    /* Projects container */
+    .projects-container {
+      max-width: 600px;
+      margin: 3rem auto;
+      text-align: center;
+    }
+
+    .project-item {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border-radius: 8px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background-color: rgba(164, 144, 255, 0.05);
+    }
+
+    .project-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(164, 144, 255, 0.15);
+    }
+
+    .project-item a {
+      color: #f5f5f5;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .project-item a:hover {
+      color: #a490ff;
+    }
+
+    /* SoundCloud button */
+    .soundcloud-button {
+      display: inline-block;
+      background-color: #a490ff;
+      color: #ffffff !important;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .soundcloud-button:hover {
+      background-color: #2a2a2a;
+      color: #ffffff !important;
+      border: 1px solid #a490ff;
+      box-shadow: 0 5px 15px rgba(164, 144, 255, 0.3);
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      body {
+        padding: 0 15px;
+      }
+      
+      nav a {
+        margin: 0 0.8rem;
+        font-size: 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .soundcloud-button {
+        padding: 12px 25px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="index.html">home</a>
+    <a href="research.html">research</a>
+    <a href="contact.html">contact</a>
+    <a href="other.html">other</a>
+  </nav>
+
+  <h1>Other</h1>
+
+  <div class="projects-container">
+    <div class="project-item">
+      <a href="https://soundcloud.com/frmrhnd" target="_blank" class="soundcloud-button">SoundCloud</a>
+    </div>
+  </div>
+
+</body>
+</html>
