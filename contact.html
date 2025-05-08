@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Cian McCarroll</title>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Spectral', serif;
+      line-height: 1.6;
+      color: #f5f5f5;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      background-color: #2a2a2a;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Spectral', serif;
+      font-weight: 500;
+      margin: 1.5rem 0 1rem 0;
+      color: #ffffff;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 2.5rem;
+      border-bottom: 1px solid #a490ff;
+      padding-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid #a490ff;
+      margin-bottom: 1.5rem;
+    }
+    
+    nav a {
+      text-decoration: none;
+      color: #cccccc;
+      margin: 0 1.5rem;
+      font-size: 1.1rem;
+      transition: color 0.2s ease;
+    }
+    
+    nav a:hover {
+      color: #ffffff;
+      border-bottom: 2px solid #a490ff;
+    }
+    
+    /* Contact section */
+    .contact-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 600px;
+      margin: 3rem auto;
+      text-align: center;
+    }
+    
+    .contact-item {
+      margin: 1rem 0;
+      padding: 1rem;
+      width: 100%;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .contact-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(164, 144, 255, 0.2);
+    }
+    
+    .contact-item a {
+      color: #f5f5f5;
+      text-decoration: none;
+      font-size: 1.3rem;
+      display: block;
+      padding: 0.5rem;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-bottom 0.2s ease;
+    }
+    
+    .contact-item a:hover {
+      color: #ffffff;
+      border-bottom: 1px solid #a490ff;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      body {
+        padding: 0 15px;
+      }
+      
+      nav a {
+        margin: 0 0.8rem;
+        font-size: 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .contact-item a {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="index.html">home</a>
+    <a href="research.html">research</a>
+    <a href="contact.html">contact</a>
+    <a href="other.html">other</a>
+  </nav>
+
+  <h1>Contact</h1>
+  
+  <div class="contact-container">
+    <div class="contact-item">
+      <a href="mailto:mccarrci@tcd.ie">
+        mccarrci@tcd.ie
+      </a>
+    </div>
+    <div class="contact-item">
+      <a href="https://scholar.google.com/citations?user=PJpyrgQAAAAJ&hl=en" target="_blank">
+        Google Scholar
+      </a>
+    </div>
+    <div class="contact-item">
+      <a href="https://www.linkedin.com/in/cianmccarroll" target="_blank">
+        LinkedIn
+      </a>
+    </div>
+    
+    <div class="contact-item">
+      <a href="https://www.instagram.com/cianmccarroll/" target="_blank">
+        Instagram
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>
