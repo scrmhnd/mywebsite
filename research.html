@@ -146,6 +146,25 @@
       border: 1px solid #a490ff;
     }
     
+    /* Visitor counter */
+    .visitor-counter {
+      position: fixed;
+      top: 12px;
+      right: 16px;
+      z-index: 100;
+      opacity: 0.75;
+      transition: opacity 0.2s ease;
+    }
+
+    .visitor-counter:hover {
+      opacity: 1;
+    }
+
+    .visitor-counter img {
+      height: 22px;
+      border-radius: 4px;
+    }
+
     /* Responsive styles */
     @media (max-width: 768px) {
       body {
@@ -172,6 +191,13 @@
   </style>
 </head>
 <body>
+
+  <!-- Visitor Counter -->
+  <div class="visitor-counter">
+    <a href="https://hits.sh/www.cianmccarroll.me/" target="_blank">
+      <img src="https://hits.sh/www.cianmccarroll.me.svg?style=flat&label=visitors&color=a490ff&labelColor=333333" alt="visitor count">
+    </a>
+  </div>
 
   <!-- Navigation Bar -->
   <nav>
