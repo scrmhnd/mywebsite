@@ -19,36 +19,16 @@
   });
 })();
 
-// ─── Visitor Counter (text-based, same font as page) ─────────────
+// ─── Visitor Counter (SVG badge styled to match page) ────────────
 (function() {
   document.addEventListener('DOMContentLoaded', function() {
-    const el = document.getElementById('visitor-count');
+    var el = document.getElementById('visitor-count');
     if (!el) return;
-    const url = 'https://hits.sh/www.cianmccarroll.me.svg?style=flat&label=visitors&color=a490ff&labelColor=333333&extraCount=0';
-    fetch(url)
-      .then(r => {
-        if (!r.ok) throw new Error('fetch failed');
-        return r.text();
-      })
-      .then(svg => {
-        // Try last <text> element with a number
-        const match = svg.match(/<text[^>]*>(\d+)<\/text>\s*$/);
-        if (match) {
-          el.textContent = match[1] + ' visitors';
-          return;
-        }
-        // Fallback: find any number in text tags
-        const nums = svg.match(/>(\d+)</g);
-        if (nums && nums.length) {
-          const last = nums[nums.length - 1].replace(/[><]/g, '');
-          el.textContent = last + ' visitors';
-          return;
-        }
-        el.textContent = 'visitors';
-      })
-      .catch(() => {
-        // CORS blocks on localhost — still register the hit via image ping
-        new Image().src = url;
-      });
+    var url = 'https://hits.sh/www.cianmccarroll.me.svg?style=flat&label=visitors&color=a490ff&labelColor=333333&extraCount=0';
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = 'visitors';
+    img.style.cssText = 'height: 18px; vertical-align: middle; border-radius: 3px;';
+    el.appendChild(img);
   });
 })();
