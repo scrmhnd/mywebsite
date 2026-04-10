@@ -7,197 +7,114 @@
   <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.png" type="image/png">
+  <script src="theme.js"></script>
   <style>
-    /* Reset and base styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Spectral', serif;
-      line-height: 1.6;
-      color: #f5f5f5;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-      background-color: #2a2a2a;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Spectral', serif;
-      font-weight: 500;
-      margin: 1.5rem 0 1rem 0;
-      color: #ffffff;
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      margin-top: 2rem;
-      text-align: center;
-    }
-    
-    h2 {
-      font-size: 1.8rem;
-      margin-top: 2.5rem;
-      border-bottom: 1px solid #a490ff;
-      padding-bottom: 0.5rem;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    
-    h3 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-    }
-    
-    p {
-      margin-bottom: 1.5rem;
-      font-size: 1.1rem;
-      font-weight: 300;
-    }
-
-    /* Navigation */
-    nav {
-      display: flex;
-      justify-content: center;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid #a490ff;
-      margin-bottom: 1.5rem;
-    }
-    
-    nav a {
-      text-decoration: none;
-      color: #cccccc;
-      margin: 0 1.5rem;
-      font-size: 1.1rem;
-      transition: color 0.2s ease;
-    }
-    
-    nav a:hover {
-      color: #ffffff;
-      border-bottom: 2px solid #a490ff;
-    }
-    
-    /* Projects container */
     .projects-container {
-      max-width: 600px;
+      max-width: 400px;
       margin: 3rem auto;
       text-align: center;
     }
 
     .project-item {
-      margin-bottom: 3rem;
       padding: 2rem;
       border-radius: 8px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background-color: rgba(164, 144, 255, 0.05);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      transition: box-shadow 0.4s ease, transform 0.3s ease, border-color 0.3s ease;
     }
 
     .project-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(164, 144, 255, 0.15);
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 0 30px rgba(164, 144, 255, 0.25), 0 0 60px rgba(164, 144, 255, 0.1);
     }
 
-    .project-item a {
-      color: #f5f5f5;
-      text-decoration: none;
-      transition: color 0.2s ease;
+    .soundcloud-link {
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--accent) !important;
+      letter-spacing: 0.02em;
     }
 
-    .project-item a:hover {
-      color: #a490ff;
+    .soundcloud-link:hover {
+      color: var(--heading) !important;
     }
 
-    /* SoundCloud button */
-    .soundcloud-button {
-      display: inline-block;
-      background-color: #a490ff;
-      color: #ffffff !important;
-      padding: 15px 30px;
-      font-size: 1.1rem;
-      font-weight: 500;
-      text-align: center;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-      border: 1px solid transparent;
+    .now-playing {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      margin-top: 0.8rem;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      letter-spacing: 0.02em;
     }
 
-    .soundcloud-button:hover {
-      background-color: #2a2a2a;
-      color: #ffffff !important;
-      border: 1px solid #a490ff;
-      box-shadow: 0 5px 15px rgba(164, 144, 255, 0.3);
-    }
-    
-    /* Visitor counter */
-    .visitor-counter {
-      position: fixed;
-      top: 12px;
-      right: 16px;
-      z-index: 100;
-      opacity: 0.75;
-      transition: opacity 0.2s ease;
-    }
-
-    .visitor-counter:hover {
-      opacity: 1;
-    }
-
-    .visitor-counter img {
-      height: 22px;
-      border-radius: 4px;
-    }
-
-    /* Responsive styles */
-    @media (max-width: 768px) {
-      body {
-        padding: 0 15px;
-      }
-      
-      nav a {
-        margin: 0 0.8rem;
-        font-size: 1rem;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      .soundcloud-button {
-        padding: 12px 25px;
-        font-size: 1rem;
-      }
+    .now-playing.visible {
+      opacity: 0.7;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-
-  <!-- Visitor Counter -->
-  <div class="visitor-counter">
-    <a href="https://hits.sh/www.cianmccarroll.me/" target="_blank">
-      <img src="https://hits.sh/www.cianmccarroll.me.svg?style=flat&label=visitors&color=a490ff&labelColor=333333" alt="visitor count">
-    </a>
+  <div class="toggle-switch">
+    <input type="checkbox" id="color-mode" class="toggle-checkbox">
+    <label for="color-mode" class="toggle-label"></label>
   </div>
+  <div class="visitor-counter"><span id="visitor-count"></span></div>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <a href="index.html">home</a>
-    <a href="research.html">research</a>
-    <a href="contact.html">contact</a>
-    <a href="other.html">other</a>
-  </nav>
+  <div class="page-content">
+    <nav>
+      <a href="index.html">home</a>
+      <a href="research.html">research</a>
+      <a href="literature-map.html">literature galaxy</a>
+      <a href="contact.html">contact</a>
+      <a href="other.html">other</a>
+    </nav>
 
-  <h1>Other</h1>
+    <h1>Other</h1>
 
-  <div class="projects-container">
-    <div class="project-item">
-      <a href="https://soundcloud.com/frmrhnd" target="_blank" class="soundcloud-button">SoundCloud</a>
+    <div class="projects-container">
+      <div class="project-item" id="soundcloud-card">
+        <a href="https://soundcloud.com/frmrhnd" target="_blank" class="soundcloud-link">SoundCloud</a>
+        <div class="now-playing" id="now-playing">♫ Gold Chain My Neck</div>
+      </div>
     </div>
   </div>
 
+  <!-- Hidden SoundCloud Widget -->
+  <iframe id="sc-widget" style="display:none" allow="autoplay"
+    src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Ffrmrhnd%2Fgold-chain-my-neck&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false">
+  </iframe>
+  <script src="https://w.soundcloud.com/player/api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var iframe = document.getElementById('sc-widget');
+      var widget = SC.Widget(iframe);
+      var card = document.getElementById('soundcloud-card');
+      var nowPlaying = document.getElementById('now-playing');
+      var isReady = false;
+
+      widget.bind(SC.Widget.Events.READY, function() {
+        isReady = true;
+        widget.setVolume(50);
+      });
+
+      card.addEventListener('mouseenter', function() {
+        if (isReady) {
+          widget.play();
+          nowPlaying.classList.add('visible');
+        }
+      });
+
+      card.addEventListener('mouseleave', function() {
+        if (isReady) {
+          widget.pause();
+          nowPlaying.classList.remove('visible');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

@@ -7,193 +7,65 @@
   <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.png" type="image/png">
+  <script src="theme.js"></script>
   <style>
-    /* Reset and base styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Spectral', serif;
-      line-height: 1.6;
-      color: #f5f5f5;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-      background-color: #2a2a2a;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Spectral', serif;
-      font-weight: 500;
-      margin: 1.5rem 0 1rem 0;
-      color: #ffffff;
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      margin-top: 2rem;
-      text-align: center;
-    }
-    
-    h2 {
-      font-size: 1.8rem;
-      margin-top: 2.5rem;
-      border-bottom: 1px solid #a490ff;
-      padding-bottom: 0.5rem;
-      text-align: center;
-    }
-    
-    p {
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-      font-weight: 300;
-    }
-
-    /* Navigation */
-    nav {
-      display: flex;
-      justify-content: center;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid #a490ff;
-      margin-bottom: 1.5rem;
-    }
-    
-    nav a {
-      text-decoration: none;
-      color: #cccccc;
-      margin: 0 1.5rem;
-      font-size: 1.1rem;
-      transition: color 0.2s ease;
-    }
-    
-    nav a:hover {
-      color: #ffffff;
-      border-bottom: 2px solid #a490ff;
-    }
-    
-    /* Contact section */
-    .contact-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      max-width: 600px;
+    .contact-list {
+      max-width: 400px;
       margin: 3rem auto;
       text-align: center;
     }
-    
+
     .contact-item {
-      margin: 1rem 0;
-      padding: 1rem;
-      width: 100%;
+      margin: 1.2rem 0;
+      padding: 1.2rem;
       border-radius: 8px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      transition: box-shadow 0.4s ease, transform 0.3s ease, border-color 0.3s ease;
     }
-    
+
     .contact-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(164, 144, 255, 0.2);
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 0 30px rgba(164, 144, 255, 0.25), 0 0 60px rgba(164, 144, 255, 0.1);
     }
-    
+
     .contact-item a {
-      color: #f5f5f5;
-      text-decoration: none;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
+      font-weight: 300;
       display: block;
-      padding: 0.5rem;
-      border-bottom: 1px solid transparent;
-      transition: color 0.2s ease, border-bottom 0.2s ease;
-    }
-    
-    .contact-item a:hover {
-      color: #ffffff;
-      border-bottom: 1px solid #a490ff;
-    }
-    
-    /* Visitor counter */
-    .visitor-counter {
-      position: fixed;
-      top: 12px;
-      right: 16px;
-      z-index: 100;
-      opacity: 0.75;
-      transition: opacity 0.2s ease;
-    }
-
-    .visitor-counter:hover {
-      opacity: 1;
-    }
-
-    .visitor-counter img {
-      height: 22px;
-      border-radius: 4px;
-    }
-
-    /* Responsive styles */
-    @media (max-width: 768px) {
-      body {
-        padding: 0 15px;
-      }
-      
-      nav a {
-        margin: 0 0.8rem;
-        font-size: 1rem;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      .contact-item a {
-        font-size: 1.1rem;
-      }
     }
   </style>
 </head>
 <body>
-
-  <!-- Visitor Counter -->
-  <div class="visitor-counter">
-    <a href="https://hits.sh/www.cianmccarroll.me/" target="_blank">
-      <img src="https://hits.sh/www.cianmccarroll.me.svg?style=flat&label=visitors&color=a490ff&labelColor=333333" alt="visitor count">
-    </a>
+  <div class="toggle-switch">
+    <input type="checkbox" id="color-mode" class="toggle-checkbox">
+    <label for="color-mode" class="toggle-label"></label>
   </div>
+  <div class="visitor-counter"><span id="visitor-count"></span></div>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <a href="index.html">home</a>
-    <a href="research.html">research</a>
-    <a href="contact.html">contact</a>
-    <a href="other.html">other</a>
-  </nav>
+  <div class="page-content">
+    <nav>
+      <a href="index.html">home</a>
+      <a href="research.html">research</a>
+      <a href="literature-map.html">literature galaxy</a>
+      <a href="contact.html">contact</a>
+      <a href="other.html">other</a>
+    </nav>
 
-  <h1>Contact</h1>
-  
-  <div class="contact-container">
-    <div class="contact-item">
-      <a href="mailto:mccarrci@tcd.ie">
-        mccarrci@tcd.ie
-      </a>
-    </div>
-    <div class="contact-item">
-      <a href="https://scholar.google.com/citations?user=PJpyrgQAAAAJ&hl=en" target="_blank">
-        Google Scholar
-      </a>
-    </div>
-    <div class="contact-item">
-      <a href="https://www.linkedin.com/in/cianmccarroll" target="_blank">
-        LinkedIn
-      </a>
-    </div>
-    
-    <div class="contact-item">
-      <a href="https://www.instagram.com/cianmccarroll/" target="_blank">
-        Instagram
-      </a>
+    <h1>Contact</h1>
+
+    <div class="contact-list">
+      <div class="contact-item">
+        <a href="mailto:mccarrci@tcd.ie">mccarrci@tcd.ie</a>
+      </div>
+      <div class="contact-item">
+        <a href="https://scholar.google.com/citations?user=PJpyrgQAAAAJ&hl=en" target="_blank">Google Scholar</a>
+      </div>
+      <div class="contact-item">
+        <a href="https://www.linkedin.com/in/cianmccarroll" target="_blank">LinkedIn</a>
+      </div>
     </div>
   </div>
-
 </body>
 </html>

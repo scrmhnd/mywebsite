@@ -1,61 +1,196 @@
-body {
-    font-family: 'Spectral', Georgia, serif;
-    margin: 50px;
-    max-width: 700px;
-    color: #111;
-    background-color: #fff;
-  }
-  
-  nav {
-    margin-bottom: 40px;
-  }
-  
-  nav a {
-    margin-right: 20px;
-    text-decoration: none;
-    color: #111;
-    font-size: 14px;
-    text-transform: lowercase;
-  }
-  
-  nav a:hover {
-    text-decoration: underline;
-  }
-  
-  h1, h2 {
-    font-weight: normal;
-    text-transform: lowercase;
-  }
-  
-  p {
-    line-height: 1.6;
-  }
-  
-  .pdf-link {
-    font-size: 13px;
-    color: #666;
-    text-decoration: none;
-  }
-  
-  .pdf-link:hover {
-    text-decoration: underline;
-  }
-  
-  /* General link rules - only once */
-  a {
-    text-decoration: none;
-    color: #111;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Add breathing room between publications */
-  li {
-    margin-bottom: 30px;
-  }
-  
-    
-    
+/* ─── CSS Variables / Theme System ─────────────────────────────── */
+:root {
+  --bg: #0a0a0f;
+  --bg-secondary: rgba(255, 255, 255, 0.03);
+  --text: #e8e8ed;
+  --text-secondary: #999;
+  --text-muted: #666;
+  --heading: #ffffff;
+  --accent: #a490ff;
+  --border: rgba(255, 255, 255, 0.1);
+  --link-hover: #a490ff;
+  --glow-color: #39ff6e;
+  --glow: 0 0 10px #39ff6e, 0 0 30px rgba(57, 255, 110, 0.5), 0 0 60px rgba(57, 255, 110, 0.2), 0 0 4px rgba(200, 255, 200, 0.8);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --toggle-bg: rgba(255, 255, 255, 0.12);
+  --toggle-dot: #fff;
+}
 
+html.light {
+  --bg: #fafafa;
+  --bg-secondary: rgba(0, 0, 0, 0.03);
+  --text: #1a1a1a;
+  --text-secondary: #555;
+  --text-muted: #888;
+  --heading: #111;
+  --accent: #6b5ce7;
+  --border: rgba(0, 0, 0, 0.1);
+  --link-hover: #6b5ce7;
+  --glow-color: #22c55e;
+  --glow: 0 0 10px #22c55e, 0 0 30px rgba(34, 197, 94, 0.4), 0 0 60px rgba(34, 197, 94, 0.15), 0 0 4px rgba(180, 255, 200, 0.6);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --toggle-bg: rgba(0, 0, 0, 0.12);
+  --toggle-dot: #111;
+}
+
+/* ─── Reset ───────────────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ─── Base ────────────────────────────────────────────────────── */
+body {
+  font-family: 'Spectral', Georgia, serif;
+  line-height: 1.7;
+  color: var(--text);
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* ─── Typography ──────────────────────────────────────────────── */
+h1, h2, h3 {
+  font-family: 'Spectral', Georgia, serif;
+  font-weight: 400;
+  color: var(--heading);
+  letter-spacing: -0.01em;
+  transition: color 0.3s ease;
+}
+
+h1 {
+  font-size: 2.4rem;
+  margin: 2.5rem 0 1.5rem;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 2.5rem 0 1.5rem;
+  text-align: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+p {
+  margin-bottom: 1.2rem;
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--text);
+  transition: color 0.3s ease;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+/* ─── Layout ──────────────────────────────────────────────────── */
+.page-content {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 24px 4rem;
+}
+
+/* ─── Navigation ──────────────────────────────────────────────── */
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  transition: border-color 0.3s ease;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  margin: 0 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, text-shadow 0.3s ease;
+}
+
+nav a:hover {
+  color: var(--heading);
+  text-shadow: var(--glow);
+}
+
+/* ─── Dark/Light Toggle ──────────────────────────────────────── */
+.toggle-switch {
+  position: fixed;
+  top: 14px;
+  right: 16px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-checkbox {
+  display: none;
+}
+
+.toggle-label {
+  position: relative;
+  width: 38px;
+  height: 20px;
+  background: var(--toggle-bg);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.toggle-label::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 3px;
+  top: 3px;
+  background: var(--toggle-dot);
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toggle-checkbox:checked + .toggle-label::before {
+  transform: translateX(18px);
+}
+
+/* ─── Visitor Counter ─────────────────────────────────────────── */
+.visitor-counter {
+  position: fixed;
+  top: 16px;
+  right: 64px;
+  z-index: 200;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, color 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.visitor-counter:hover {
+  opacity: 1;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page-content { padding: 0 16px 3rem; }
+  nav a { margin: 0 0.7rem; font-size: 0.85rem; }
+  h1 { font-size: 1.9rem; }
+  h2 { font-size: 1.3rem; }
+  p { font-size: 1rem; }
+  .visitor-counter { right: 56px; font-size: 0.75rem; }
+  .toggle-switch { right: 12px; }
+}
