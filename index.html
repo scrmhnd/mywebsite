@@ -4,226 +4,493 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cian McCarroll</title>
-  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.png" type="image/png">
+  <script src="theme.js"></script>
   <style>
-    /* Reset and base styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Spectral', serif;
-      line-height: 1.6;
-      color: #f5f5f5;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-      background-color: #2a2a2a;
+    /* Galaxy background */
+    #galaxy-bg {
+      position: fixed;
+      top: 140px; left: 0;
+      width: 100vw; height: calc(100vh - 140px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
     }
 
-    h1, h2, h3 {
-      font-family: 'Spectral', serif;
-      font-weight: 500;
-      margin: 1.5rem 0 1rem 0;
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      margin-top: 2rem;
-      text-align: center;
-    }
-    
-    h2 {
-      font-size: 1.8rem;
-      margin-top: 2.5rem;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 0.5rem;
-      text-align: center;
-    }
-    
-    p {
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-      font-weight: 300;
-    }
+    html.light #galaxy-bg { opacity: 0.2; }
 
-    /* Navigation */
-    nav {
-      display: flex;
-      justify-content: center;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid #a490ff;
-      margin-bottom: 1.5rem;
-    }
-    
-    nav a {
-      text-decoration: none;
-      color: #cccccc;
-      margin: 0 1.5rem;
-      font-size: 1.1rem;
-      transition: color 0.2s ease;
-    }
-    
-    nav a:hover {
-      color: #ffffff;
-      border-bottom: 2px solid #a490ff;
-    }
-    
-    /* Introduction section */
-    .intro-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 2rem;
-      margin: 2rem 0 3rem 0;
-    }
-    
-    .intro-text {
-      width: 100%;
-      max-width: 600px;
-    }
-    
-    .intro-text p {
-      font-size: 1.3rem;
-      line-height: 1.7;
-      color: #dddddd;
-    }
-    
-    
-    /* About section */
     .about-section {
-      margin: 2rem auto 4rem auto;
+      max-width: 560px;
+      margin: 1rem auto 3rem;
       text-align: center;
-      max-width: 600px;
     }
-    
-    /* Research section */
-    .research-section {
-      margin: 2rem auto 4rem auto;
-      text-align: center;
-      max-width: 600px;
+
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
     }
-    
-    /* Poster section */
+
     .poster {
       margin: 2rem 0;
       text-align: center;
     }
-    
+
     .poster img {
       max-width: 100%;
       height: auto;
       max-height: 800px;
       object-fit: contain;
       border-radius: 8px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-      border: 1px solid #555555;
-    }
-    
-    /* Visitor counter */
-    .visitor-counter {
-      position: fixed;
-      top: 12px;
-      right: 16px;
-      z-index: 100;
-      opacity: 0.75;
-      transition: opacity 0.2s ease;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.4s ease, border-color 0.3s ease;
     }
 
-    .visitor-counter:hover {
-      opacity: 1;
+    .poster img:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px rgba(164, 144, 255, 0.25), 0 0 60px rgba(164, 144, 255, 0.1);
     }
 
-    .visitor-counter img {
-      height: 22px;
-      border-radius: 4px;
-    }
-
-    /* Responsive styles */
-    @media (max-width: 768px) {
-      body {
-        padding: 0 15px;
-      }
-      
-      .my-image {
-        width: 150px;
-      }
-      
-      nav a {
-        margin: 0 0.8rem;
-        font-size: 1rem;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      h2 {
-        font-size: 1.5rem;
-      }
-      
-      .intro-text p {
-        font-size: 1.1rem;
-      }
+    @keyframes anchorPulse {
+      0%, 100% { r: 10; fill-opacity: 0.12; }
+      50% { r: 16; fill-opacity: 0.04; }
     }
   </style>
-  <script>
-    // Add image error handling
-    window.onload = function() {
-      const posterImg = document.getElementById('poster-img');
-      if (posterImg) {
-        posterImg.onerror = function() {
-          console.error('Image failed to load:', this.src);
-          this.style.display = 'none';
-          const errorMsg = document.createElement('p');
-          errorMsg.textContent = 'Poster image could not be loaded. Please check file path.';
-          errorMsg.style.color = '#ff6b6b';
-          this.parentNode.appendChild(errorMsg);
-        };
-      }
-    };
-  </script>
 </head>
 <body>
+  <div class="toggle-switch">
+    <input type="checkbox" id="color-mode" class="toggle-checkbox">
+    <label for="color-mode" class="toggle-label"></label>
+  </div>
+  <div class="visitor-counter"><span id="visitor-count"></span></div>
 
-  <!-- Visitor Counter -->
-  <div class="visitor-counter">
-    <a href="https://hits.sh/www.cianmccarroll.me/" target="_blank">
-      <img src="https://hits.sh/www.cianmccarroll.me.svg?style=flat&label=visitors&color=a490ff&labelColor=333333" alt="visitor count">
-    </a>
+  <!-- Galaxy Background -->
+  <div id="galaxy-bg">
+    <svg id="galaxy-svg" width="100%" height="100%"></svg>
   </div>
 
-  <!-- Navigation Bar -->
-  <nav>
-    <a href="index.html">home</a>
-    <a href="research.html">research</a>
-    <a href="contact.html">contact</a>
-    <a href="other.html">other</a>
-  </nav>
+  <div class="page-content">
+    <nav>
+      <a href="index.html">home</a>
+      <a href="research.html">research</a>
+      <a href="literature-map.html">literature galaxy</a>
+      <a href="contact.html">contact</a>
+      <a href="other.html">other</a>
+    </nav>
 
-  <h1>Hello, I'm Cian</h1>
+    <h1>Hello, I'm Cian</h1>
 
-  <div class="intro-container">
-    <div class="intro-text">
-      <div class="about-section">
-        <h2 style="border-bottom: 1px solid #a490ff;">About Me</h2>
-        <p>I research how artificial intelligence changes the way people spend their time in the urban environment. My research is based in Wuhan, China and explores how time spent within autonomous vehicles can be used as a lens to explore the dissolution of boundaries between labour and non-labour time.</p>
-        <p>I am interested in the social implications of AI, with a focus on how AI reshapes our experience of time and space in urban environments. I aim to contribute to critical discussions about technological futures and the changing nature of work. Time is the lens to view value in a digital world</p>
-        <p>I am based in Trinity College Dublin and funded by an ADVANCE CRT scholarship.</p>
-      </div>
+    <div class="about-section">
+      <h2>About Me</h2>
+      <p>I research how artificial intelligence changes the way people spend their time in the urban environment. My research is based in Wuhan, China and explores how time spent within autonomous vehicles can be used as a lens to explore the dissolution of boundaries between labour and non-labour time.</p>
+      <p>I am interested in the social implications of AI, with a focus on how AI reshapes our experience of time and space in urban environments. I aim to contribute to critical discussions about technological futures and the changing nature of work. Time is the lens to view value in a digital world</p>
+      <p>I am based in Trinity College Dublin and funded by an ADVANCE CRT scholarship.</p>
+    </div>
+
+    <div class="poster">
+      <img id="poster-img" src="papers/Cian McCarroll Poster(FINAL)Redo_page-0001.jpg" alt="Poster for Social Implications of Autonomous Vehicles">
     </div>
   </div>
 
-  <!-- Poster Section -->
-  <div class="poster">
-    <h2 style="border-bottom: 1px solid #a490ff;"></h2>
-    <img id="poster-img" src="papers/Cian McCarroll Poster(FINAL)Redo_page-0001.jpg" alt="Poster for Social Implications of Autonomous Vehicles">
-  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script>
+  // ─── THEMES ─────────────────────────────────────────────────────────
+  const themes = {
+    "Urban AI":     { color: "#4ecdc4", cx: 0.22, cy: 0.35, r: 0.23 },
+    "Time & Speed": { color: "#ff6b6b", cx: 0.55, cy: 0.25, r: 0.24 },
+    "Surveillance": { color: "#ffd93d", cx: 0.80, cy: 0.45, r: 0.20 },
+    "Urban Space":  { color: "#6c5ce7", cx: 0.30, cy: 0.72, r: 0.22 },
+    "Autonomy":     { color: "#a8e6cf", cx: 0.58, cy: 0.68, r: 0.20 }
+  };
+
+  const anchors = {
+    "Urban AI": "cugurullo", "Time & Speed": "rosa", "Surveillance": "zuboff",
+    "Urban Space": "lefebvre", "Autonomy": "berardi"
+  };
+
+  // ─── AUTHORS (names + themes only, no titles) ───────────────────────
+  const authors = [
+    // Foundational
+    { id:"cugurullo", author:"Federico Cugurullo", tier:"foundational", anchor:true, themes:["Urban AI"] },
+    { id:"kitchin", author:"Rob Kitchin", tier:"foundational", themes:["Urban AI","Surveillance"] },
+    { id:"graham-marvin", author:"Stephen Graham & Simon Marvin", tier:"foundational", themes:["Urban AI","Urban Space"] },
+    { id:"crawford", author:"Kate Crawford", tier:"foundational", themes:["Urban AI","Surveillance"] },
+    { id:"greenfield", author:"Adam Greenfield", tier:"foundational", themes:["Urban AI"] },
+    { id:"mattern", author:"Shannon Mattern", tier:"foundational", themes:["Urban AI","Urban Space"] },
+    { id:"levitt", author:"Deborah Levitt", tier:"foundational", themes:["Urban AI","Time & Speed"] },
+    { id:"rosa", author:"Hartmut Rosa", tier:"foundational", anchor:true, themes:["Time & Speed"] },
+    { id:"hagerstrand", author:"Torsten Hägerstrand", tier:"foundational", themes:["Time & Speed","Urban Space"] },
+    { id:"virilio", author:"Paul Virilio", tier:"foundational", themes:["Time & Speed"] },
+    { id:"crary", author:"Jonathan Crary", tier:"foundational", themes:["Time & Speed","Surveillance"] },
+    { id:"wajcman", author:"Judy Wajcman", tier:"foundational", themes:["Time & Speed","Autonomy"] },
+    { id:"thompson", author:"E.P. Thompson", tier:"foundational", themes:["Time & Speed","Autonomy"] },
+    { id:"zuboff", author:"Shoshana Zuboff", tier:"foundational", anchor:true, themes:["Surveillance"] },
+    { id:"han", author:"Byung-Chul Han", tier:"foundational", themes:["Time & Speed","Surveillance"] },
+    { id:"pasquale", author:"Frank Pasquale", tier:"foundational", themes:["Surveillance"] },
+    { id:"noble", author:"Safiya Umoja Noble", tier:"foundational", themes:["Surveillance","Autonomy"] },
+    { id:"lefebvre", author:"Henri Lefebvre", tier:"foundational", anchor:true, themes:["Urban Space","Time & Speed"] },
+    { id:"harvey", author:"David Harvey", tier:"foundational", anchor:true, themes:["Urban Space","Time & Speed"] },
+    { id:"brenner", author:"Neil Brenner", tier:"foundational", themes:["Urban Space"] },
+    { id:"soja", author:"Edward Soja", tier:"foundational", themes:["Urban Space"] },
+    { id:"massey", author:"Doreen Massey", tier:"foundational", themes:["Urban Space","Autonomy"] },
+    { id:"castells", author:"Manuel Castells", tier:"foundational", themes:["Urban Space","Time & Speed"] },
+    { id:"urry", author:"John Urry", tier:"foundational", themes:["Time & Speed","Urban Space"] },
+    { id:"berardi", author:"Franco 'Bifo' Berardi", tier:"foundational", anchor:true, themes:["Autonomy","Time & Speed"] },
+    { id:"arendt", author:"Hannah Arendt", tier:"foundational", themes:["Autonomy","Urban Space"] },
+    { id:"srnicek", author:"Nick Srnicek", tier:"foundational", themes:["Autonomy","Surveillance"] },
+    { id:"latour", author:"Bruno Latour", tier:"foundational", themes:["Urban AI","Autonomy"] },
+    // Interlocutors
+    { id:"caprotti", author:"Federico Caprotti", tier:"interlocutor", themes:["Urban AI","Urban Space"], orbitParentId:"cugurullo" },
+    { id:"marvin", author:"Simon Marvin", tier:"interlocutor", themes:["Urban AI","Urban Space"], orbitParentId:"graham-marvin" },
+    { id:"guo", author:"Zongtian Guo", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"bei-chen", author:"Bei Chen", tier:"interlocutor", themes:["Urban AI","Time & Speed"], orbitParentId:"cugurullo" },
+    { id:"coletta", author:"Claudio Coletta", tier:"interlocutor", themes:["Urban AI","Time & Speed"], orbitParentId:"kitchin" },
+    { id:"shelton", author:"Taylor Shelton", tier:"interlocutor", themes:["Urban AI","Urban Space"], orbitParentId:"greenfield" },
+    { id:"sadowski", author:"Jathan Sadowski", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"crawford" },
+    { id:"lee", author:"Hyun Jung Lee", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"cugurullo" },
+    { id:"liang", author:"Fan Liang", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"zeng", author:"Jinghan Zeng", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"cugurullo" },
+    { id:"sharma", author:"Sarah Sharma", tier:"interlocutor", themes:["Time & Speed","Autonomy"], orbitParentId:"wajcman" },
+    { id:"vostal", author:"Filip Vostal", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"rosa" },
+    { id:"southerton", author:"Dale Southerton", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"rosa" },
+    { id:"chen-sun", author:"Julie Yujie Chen", tier:"interlocutor", themes:["Time & Speed","Surveillance"], orbitParentId:"crary" },
+    { id:"julsrud", author:"Tom Erik Julsrud", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"urry" },
+    { id:"denstadli", author:"Jon Martin Denstadli", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"urry" },
+    { id:"gaio", author:"Alex Gaio", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"urry" },
+    { id:"ellegard", author:"Kajsa Ellegård", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"schwanen", author:"Tim Schwanen", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"bissell", author:"David Bissell", tier:"interlocutor", themes:["Urban AI","Time & Speed"], orbitParentId:"levitt" },
+    { id:"safransky", author:"Sara Safransky", tier:"interlocutor", themes:["Surveillance","Urban Space"], orbitParentId:"zuboff" },
+    { id:"rosenblat", author:"Alex Rosenblat", tier:"interlocutor", themes:["Surveillance","Time & Speed"], orbitParentId:"zuboff" },
+    { id:"eubanks", author:"Virginia Eubanks", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"noble" },
+    { id:"mcfarlane", author:"Colin McFarlane", tier:"interlocutor", themes:["Urban Space","Urban AI"], orbitParentId:"latour" },
+    { id:"sassen", author:"Saskia Sassen", tier:"interlocutor", themes:["Urban Space","Surveillance"], orbitParentId:"castells" },
+    { id:"sheller", author:"Mimi Sheller", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"massey" },
+    { id:"standing", author:"Guy Standing", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"gray", author:"Mary L. Gray", tier:"interlocutor", themes:["Autonomy","Surveillance"], orbitParentId:"srnicek" },
+    { id:"karvonen2019", author:"Karvonen", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"allam2019", author:"Allam", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"yigitcanlar2020", author:"Yigitcanlar", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"luusua2023", author:"Luusua", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"gaffney2018", author:"Gaffney", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"cowley2018", author:"Cowley", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"mcneill2016", author:"McNeill", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"wiig2015", author:"Wiig", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"datta2015", author:"Datta", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"soderstrom2014", author:"Soderstrom", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"white2016", author:"White", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"cardullo2019", author:"Cardullo", tier:"interlocutor", themes:["Urban AI"], orbitParentId:"cugurullo" },
+    { id:"thulin2020", author:"Thulin", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"kwan2004", author:"Kwan", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"miller2005", author:"Miller", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"miller2009", author:"Miller", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"sui2012", author:"Sui", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"shaw2009", author:"Shaw", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"couclelis2009", author:"Couclelis", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"neutens2011", author:"Neutens", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"pred1977", author:"Pred", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"lenntorp1976", author:"Lenntorp", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"vilhelmson2008", author:"Vilhelmson", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"sianowicka2016", author:"Siła-Nowicka", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"dodge2021", author:"Dodge", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"long2013", author:"Long", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"adams1995", author:"Adams", tier:"interlocutor", themes:["Time & Speed","Urban Space"], orbitParentId:"hagerstrand" },
+    { id:"adam1998", author:"Adam", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"rosa" },
+    { id:"adam2004", author:"Adam", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"rosa" },
+    { id:"nowotny1994", author:"Nowotny", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"rosa" },
+    { id:"hassan2009", author:"Hassan", tier:"interlocutor", themes:["Time & Speed"], orbitParentId:"rosa" },
+    { id:"milakis2017", author:"Milakis", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"milakis2017b", author:"Milakis", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"singleton2019", author:"Singleton", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"steck2018", author:"Steck", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"pudane2018", author:"Pudane", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"rosa" },
+    { id:"childress2015", author:"Childress", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"wadud2022", author:"Wadud", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"rosa" },
+    { id:"soteropoulos2019", author:"Soteropoulos", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"fagnant2015", author:"Fagnant", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"fraedrich2016", author:"Fraedrich", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"haboucha2017", author:"Haboucha", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"correia2019", author:"Correia", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"liu2023", author:"Liu", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"ma2024", author:"Ma", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"zhang2017", author:"Zhang", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"harper2016", author:"Harper", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"kolarova2019", author:"Kolarova", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"rosa" },
+    { id:"currie2018", author:"Currie", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"zakharenko2016", author:"Zakharenko", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"alessandrini2015", author:"Alessandrini", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"kellerman2018", author:"Kellerman", tier:"interlocutor", themes:["Time & Speed","Urban AI"], orbitParentId:"cugurullo" },
+    { id:"creemers2018", author:"Creemers", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"cugurullo" },
+    { id:"kostka2019", author:"Kostka", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"cugurullo" },
+    { id:"jia2022", author:"Jia", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"cugurullo" },
+    { id:"aho2020", author:"Aho", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"cugurullo" },
+    { id:"pan2020", author:"Pan", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"cugurullo" },
+    { id:"hollands2008", author:"Hollands", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"hollands2015", author:"Hollands", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"vanolo2014", author:"Vanolo", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"evans2016", author:"Evans", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"ash2019", author:"Ash", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"thatcher2016", author:"Thatcher", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"shaw2017", author:"Shaw", tier:"interlocutor", themes:["Urban AI","Surveillance"], orbitParentId:"kitchin" },
+    { id:"brynjolfsson2018", author:"Brynjolfsson", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"brynjolfsson2014", author:"Brynjolfsson", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"brynjolfsson2017", author:"Brynjolfsson", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"acemoglu2019", author:"Acemoglu", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"acemoglu2020", author:"Acemoglu", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"acemoglu2024", author:"Acemoglu", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"autor2015", author:"Autor", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"autor2022", author:"Autor", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"frey2017", author:"Frey", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"frey2019", author:"Frey", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"susskind2020", author:"Susskind", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"keynes1930", author:"Keynes", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"solow1987", author:"Solow", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"gordon2016", author:"Gordon", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"agrawal2018", author:"Agrawal", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"agrawal2019", author:"Agrawal", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"arntz2016", author:"Arntz", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"nedelkoska2018", author:"Nedelkoska", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"eloundou2024", author:"Eloundou", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"spencer2018", author:"Spencer", tier:"interlocutor", themes:["Autonomy","Time & Speed"], orbitParentId:"berardi" },
+    { id:"wood2019", author:"Wood", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"woodcock2019", author:"Woodcock", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"veen2020", author:"Veen", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"bastani2019", author:"Bastani", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"mason2015", author:"Mason", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"dyerwitheford2015", author:"Dyer-Witheford", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"scholz2016", author:"Scholz", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"casilli2019", author:"Casilli", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"schor2017", author:"Schor", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"destefano2016", author:"De Stefano", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"gandini2019", author:"Gandini", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"ivanova2018", author:"Ivanova", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"richardson2020", author:"Richardson", tier:"interlocutor", themes:["Surveillance","Autonomy"], orbitParentId:"srnicek" },
+    { id:"callon1984", author:"Callon", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"law1992", author:"Law", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"haraway1991", author:"Haraway", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"haraway2016", author:"Haraway", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"braidotti2013", author:"Braidotti", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"braidotti2019", author:"Braidotti", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"hayles1999", author:"Hayles", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"bennett2010", author:"Bennett", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"coole2010", author:"Coole", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"amin2002", author:"Amin", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"farias2010", author:"Farias", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"hinchliffe2006", author:"Hinchliffe", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"thrift2005", author:"Thrift", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"thrift2004", author:"Thrift", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"gabrys2014", author:"Gabrys", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"gabrys2016", author:"Gabrys", tier:"interlocutor", themes:["Urban AI","Autonomy"], orbitParentId:"latour" },
+    { id:"jessop2002", author:"Jessop", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"swyngedouw2005", author:"Swyngedouw", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"kaika2017", author:"Kaika", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"couldry2019", author:"Couldry", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"morozov2013", author:"Morozov", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"winner1980", author:"Winner", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"jasanoff2015", author:"Jasanoff", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"jasanoff2004", author:"Jasanoff", tier:"interlocutor", themes:["Urban Space","Autonomy"], orbitParentId:"lefebvre" },
+    { id:"cresswell2006", author:"Cresswell", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"elliott2010", author:"Elliott", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"walks2015", author:"Walks", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"dennis2009", author:"Dennis", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"manderscheid2014", author:"Manderscheid", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"dodge2005", author:"Dodge", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"zook2017", author:"Zook", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"leszczynski2016", author:"Leszczynski", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"beer2017", author:"Beer", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"benjamin2019", author:"Benjamin", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"oneil2016", author:"O'Neil", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"cowen2014", author:"Cowen", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"bratton2016", author:"Bratton", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"hu2015", author:"Hu", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+    { id:"halpern2014", author:"Halpern", tier:"interlocutor", themes:["Urban Space","Time & Speed"], orbitParentId:"urry" },
+  ];
+
+  // ─── LAYOUT ─────────────────────────────────────────────────────────
+  const W = window.innerWidth, H = window.innerHeight, minD = Math.min(W, H);
+  const themeCircles = Object.entries(themes).map(([name, t]) => ({
+    name, color: t.color, cx: t.cx*W, cy: t.cy*H, r: t.r*minD
+  }));
+
+  function srand(seed) { let x = Math.sin(seed)*10000; return x - Math.floor(x); }
+
+  const foundational = authors.filter(a => a.tier === "foundational");
+  const interlocutors = authors.filter(a => a.tier === "interlocutor");
+
+  const groups = {};
+  foundational.forEach(a => { const k = a.themes.join("+"); if (!groups[k]) groups[k]=[]; groups[k].push(a); });
+
+  foundational.forEach((a, i) => {
+    const rel = themeCircles.filter(c => a.themes.includes(c.name));
+    if (a.anchor) {
+      const primary = themeCircles.find(c => c.name === a.themes[0]);
+      if (a.id === "harvey") { a.x = primary.cx + 45; a.y = primary.cy - 25; }
+      else { a.x = primary.cx; a.y = primary.cy; }
+      return;
+    }
+    let cx = rel.reduce((s,c)=>s+c.cx,0)/rel.length;
+    let cy = rel.reduce((s,c)=>s+c.cy,0)/rel.length;
+    const grp = groups[a.themes.join("+")];
+    const idx = grp.indexOf(a), cnt = grp.length;
+    if (cnt <= 1) { a.x = cx + (srand(i*7+1)-0.5)*60; a.y = cy + (srand(i*13+3)-0.5)*60; }
+    else { const ang = (idx/cnt)*Math.PI*2 + srand(i*3)*0.5; const spr = 40 + cnt*12; a.x = cx + Math.cos(ang)*spr; a.y = cy + Math.sin(ang)*spr; }
+  });
+
+  interlocutors.forEach((a, i) => {
+    const parent = authors.find(f => f.id === a.orbitParentId);
+    if (!parent) return;
+    a.orbitParent = parent;
+    const shared = a.themes.filter(t => parent.themes.includes(t)).length;
+    const total = a.themes.length;
+    a.orbitRadius = 55 + (total - shared)*28 + srand(i*31)*22;
+    a.orbitSpeed = 0.10 + srand(i*41)*0.20;
+    if (srand(i*53) > 0.5) a.orbitSpeed *= -1;
+    const other = a.themes.filter(t => !parent.themes.includes(t));
+    if (other.length > 0) {
+      const oc = themeCircles.filter(c => other.includes(c.name));
+      a.pullX = (oc.reduce((s,c)=>s+c.cx,0)/oc.length - parent.x) * 0.3;
+      a.pullY = (oc.reduce((s,c)=>s+c.cy,0)/oc.length - parent.y) * 0.3;
+    } else { a.pullX = 0; a.pullY = 0; }
+    a.tilt = Math.atan2(a.pullY, a.pullX);
+    a.angle = srand(i*67) * Math.PI * 2;
+    a.x = parent.x; a.y = parent.y;
+  });
+
+  // ─── RENDER ─────────────────────────────────────────────────────────
+  const svg = d3.select("#galaxy-svg"), g = svg.append("g");
+
+  // Theme circles
+  const circGrp = g.append("g");
+  circGrp.selectAll("circle").data(themeCircles).join("circle")
+    .attr("cx",d=>d.cx).attr("cy",d=>d.cy).attr("r",d=>d.r)
+    .attr("fill",d=>d.color).attr("fill-opacity",0.03)
+    .attr("stroke",d=>d.color).attr("stroke-opacity",0.10).attr("stroke-width",1);
+
+  // Give each theme label an orbit angle and speed
+  themeCircles.forEach((t, i) => {
+    t.labelAngle = (i / themeCircles.length) * Math.PI * 2;
+    t.labelSpeed = 0.06 + i * 0.015; // slow, slightly varied speeds
+  });
+
+  const themeLabels = circGrp.selectAll("text").data(themeCircles).join("text")
+    .attr("x", d => d.cx + Math.cos(d.labelAngle) * (d.r * 0.75))
+    .attr("y", d => d.cy + Math.sin(d.labelAngle) * (d.r * 0.75))
+    .attr("text-anchor","middle").attr("fill",d=>d.color).attr("fill-opacity",0.28)
+    .attr("font-size","11px").attr("font-family","'Space Grotesk',sans-serif")
+    .attr("font-weight",500).attr("letter-spacing","1.5px")
+    .text(d=>d.name.toUpperCase());
+
+  // Foundational connections
+  const conns = [];
+  for (let i=0;i<foundational.length;i++) for (let j=i+1;j<foundational.length;j++) {
+    const sh = foundational[i].themes.filter(t=>foundational[j].themes.includes(t));
+    if (sh.length) conns.push({source:foundational[i],target:foundational[j],shared:sh,strength:sh.length});
+  }
+
+  const linkGrp = g.append("g");
+  linkGrp.selectAll("line.conn").data(conns).join("line").attr("class","conn")
+    .attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+    .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y)
+    .attr("stroke","#fff").attr("stroke-opacity",d=>0.015+d.strength*0.015)
+    .attr("stroke-width",d=>0.3+d.strength*0.3);
+
+  // Orbit trails
+  const trailGrp = g.append("g");
+  interlocutors.forEach((a, i) => {
+    if (!a.orbitParent) return;
+    const p = a.orbitParent;
+    const rx = a.orbitRadius;
+    const pull = Math.sqrt(a.pullX*a.pullX + a.pullY*a.pullY);
+    const ry = rx * Math.max(0.45, 1 - pull/(rx*3));
+    const deg = a.tilt*180/Math.PI;
+    trailGrp.append("ellipse")
+      .attr("cx",p.x+a.pullX*0.5).attr("cy",p.y+a.pullY*0.5)
+      .attr("rx",rx).attr("ry",ry)
+      .attr("transform",`rotate(${deg},${p.x+a.pullX*0.5},${p.y+a.pullY*0.5})`)
+      .attr("fill","none").attr("stroke",themes[a.themes[0]].color)
+      .attr("stroke-opacity",0.04).attr("stroke-width",0.5)
+      .attr("stroke-dasharray","3,8");
+  });
+
+  // Tether lines
+  const tetherLines = linkGrp.selectAll("line.tether").data(interlocutors.filter(a=>a.orbitParent)).join("line")
+    .attr("class","tether").attr("stroke",d=>themes[d.themes[0]].color)
+    .attr("stroke-opacity",0.03).attr("stroke-width",0.3);
+
+  // Nodes
+  const nodeGrp = g.append("g");
+  const allA = [...foundational, ...interlocutors];
+
+  const nodes = nodeGrp.selectAll("g.node").data(allA,d=>d.id).join("g")
+    .attr("class",d=>`node t-${d.tier}`)
+    .attr("transform",d=>`translate(${d.x},${d.y})`);
+
+  // Anchor pulse
+  nodes.filter(d=>d.anchor).append("circle").attr("class","anchor-pulse")
+    .attr("fill",d=>themes[d.themes[0]].color)
+    .attr("fill-opacity",0.06).attr("r",12)
+    .style("animation","anchorPulse 3s ease-in-out infinite");
+
+  // Glow
+  nodes.append("circle").attr("class","glow")
+    .attr("r",d=>d.tier==="foundational"?20:10)
+    .attr("fill",d=>themes[d.themes[0]].color)
+    .attr("fill-opacity",d=>d.tier==="foundational"?0.07:0.04);
+
+  // Core
+  nodes.append("circle").attr("class","core")
+    .attr("r",d=>d.tier==="foundational"?6:3)
+    .attr("fill",d=>themes[d.themes[0]].color)
+    .attr("fill-opacity",d=>d.tier==="foundational"?0.85:0.5);
+
+  // Multi-theme rings
+  nodes.filter(d=>d.themes.length>1&&d.tier==="foundational").append("circle")
+    .attr("r",11).attr("fill","none").attr("stroke",d=>themes[d.themes[1]].color)
+    .attr("stroke-opacity",0.3).attr("stroke-width",1.2).attr("stroke-dasharray","3,3");
+
+  nodes.filter(d=>d.themes.length>1&&d.tier==="interlocutor").append("circle")
+    .attr("r",6).attr("fill","none").attr("stroke",d=>themes[d.themes[1]].color)
+    .attr("stroke-opacity",0.2).attr("stroke-width",0.8).attr("stroke-dasharray","2,3");
+
+  // ─── ORBITAL ANIMATION ──────────────────────────────────────────────
+  let lt = performance.now();
+  function tick(now) {
+    const dt = Math.min((now-lt)/1000, 0.1);
+    interlocutors.forEach(a => {
+      if (!a.orbitParent) return;
+      const p = a.orbitParent;
+      a.angle += a.orbitSpeed * dt;
+      const rx = a.orbitRadius;
+      const pull = Math.sqrt(a.pullX*a.pullX+a.pullY*a.pullY);
+      const ry = rx * Math.max(0.45, 1 - pull/(rx*3));
+      const ct=Math.cos(a.tilt),st=Math.sin(a.tilt);
+      const ca=Math.cos(a.angle),sa=Math.sin(a.angle);
+      const lx=rx*ca, ly=ry*sa;
+      a.x = p.x + a.pullX*0.5 + lx*ct - ly*st;
+      a.y = p.y + a.pullY*0.5 + lx*st + ly*ct;
+    });
+    nodes.filter(d=>d.tier==="interlocutor").attr("transform",d=>`translate(${d.x},${d.y})`);
+    tetherLines.attr("x1",d=>d.x).attr("y1",d=>d.y).attr("x2",d=>d.orbitParent.x).attr("y2",d=>d.orbitParent.y);
+    // Orbit theme labels around their circles
+    themeCircles.forEach(t => { t.labelAngle += t.labelSpeed * dt; });
+    themeLabels
+      .attr("x", d => d.cx + Math.cos(d.labelAngle) * (d.r * 0.75))
+      .attr("y", d => d.cy + Math.sin(d.labelAngle) * (d.r * 0.75));
+    lt = now;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // Entrance animation
+  circGrp.selectAll("circle").attr("fill-opacity",0).attr("stroke-opacity",0).transition().delay((_,i)=>i*100).duration(800).attr("fill-opacity",0.03).attr("stroke-opacity",0.10);
+  circGrp.selectAll("text").attr("fill-opacity",0).transition().delay((_,i)=>i*100+200).duration(600).attr("fill-opacity",0.28);
+  nodes.attr("opacity",0).transition().delay((d,i)=>d.anchor?i*50:d.tier==="foundational"?300+i*50:900+i*35).duration(500).attr("opacity",1);
+  linkGrp.selectAll("line").attr("stroke-opacity",0).transition().delay(1200).duration(600).attr("stroke-opacity",function(d){ return d.strength!==undefined?0.015+d.strength*0.015:0.03; });
+  trailGrp.selectAll("ellipse").attr("stroke-opacity",0).transition().delay(1400).duration(600).attr("stroke-opacity",0.04);
+  </script>
 
 </body>
 </html>

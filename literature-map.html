@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Literature Galaxy — Cian McCarroll</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<script>
+  // Apply saved theme before render to prevent flash
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'light' || (!saved && !prefersDark)) {
+      document.documentElement.classList.add('light');
+    }
+  })();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --galaxy-bg: #0a0a0f;
+    --galaxy-text: #e0e0e6;
+    --galaxy-heading: #fff;
+    --galaxy-sub: #888;
+    --galaxy-panel-bg: rgba(14,14,22,0.97);
+    --galaxy-panel-border: rgba(255,255,255,0.06);
+    --galaxy-btn-bg: rgba(255,255,255,0.04);
+    --galaxy-btn-border: rgba(255,255,255,0.08);
+    --galaxy-btn-color: #555;
+    --galaxy-btn-hover: #aaa;
+    --galaxy-close-border: rgba(255,255,255,0.1);
+    --galaxy-close-color: #aaa;
+    --galaxy-tier-bg: rgba(255,255,255,0.05);
+    --galaxy-tier-color: #777;
+    --galaxy-tier-border: rgba(255,255,255,0.08);
+    --galaxy-field-color: #666;
+    --galaxy-work-color: #aaa;
+    --galaxy-notes-color: #bbb;
+    --galaxy-conn-color: #999;
+    --galaxy-legend-color: #666;
+    --galaxy-instr-color: #444;
+    --galaxy-bar-grad: linear-gradient(180deg, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0) 100%);
+    --galaxy-link-bg: rgba(10,10,15,0.8);
+    --galaxy-scrollbar: rgba(255,255,255,0.1);
+    --galaxy-node-label: #fff;
+    --galaxy-theme-label-opacity: 0.28;
+    --galaxy-circle-fill-opacity: 0.03;
+    --galaxy-circle-stroke-opacity: 0.10;
+  }
+
+  html.light {
+    --galaxy-bg: #f5f5f0;
+    --galaxy-text: #1a1a1a;
+    --galaxy-heading: #111;
+    --galaxy-sub: #666;
+    --galaxy-panel-bg: rgba(250,250,245,0.97);
+    --galaxy-panel-border: rgba(0,0,0,0.08);
+    --galaxy-btn-bg: rgba(0,0,0,0.04);
+    --galaxy-btn-border: rgba(0,0,0,0.12);
+    --galaxy-btn-color: #777;
+    --galaxy-btn-hover: #333;
+    --galaxy-close-border: rgba(0,0,0,0.15);
+    --galaxy-close-color: #666;
+    --galaxy-tier-bg: rgba(0,0,0,0.04);
+    --galaxy-tier-color: #555;
+    --galaxy-tier-border: rgba(0,0,0,0.1);
+    --galaxy-field-color: #777;
+    --galaxy-work-color: #555;
+    --galaxy-notes-color: #444;
+    --galaxy-conn-color: #555;
+    --galaxy-legend-color: #555;
+    --galaxy-instr-color: #888;
+    --galaxy-bar-grad: linear-gradient(180deg, rgba(245,245,240,0.95) 0%, rgba(245,245,240,0) 100%);
+    --galaxy-link-bg: rgba(245,245,240,0.8);
+    --galaxy-scrollbar: rgba(0,0,0,0.12);
+    --galaxy-node-label: #222;
+    --galaxy-theme-label-opacity: 0.55;
+    --galaxy-circle-fill-opacity: 0.06;
+    --galaxy-circle-stroke-opacity: 0.18;
+  }
+
+  body { background: var(--galaxy-bg); color: var(--galaxy-text); font-family: 'Inter', sans-serif; overflow: hidden; height: 100vh; width: 100vw; transition: background 0.3s ease, color 0.3s ease; }
+
+  #title-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 32px; background: var(--galaxy-bar-grad); pointer-events: none; }
+  #title-bar h1 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 500; letter-spacing: 0.5px; color: var(--galaxy-heading); opacity: 0.9; }
+  #title-bar p { font-size: 12px; color: var(--galaxy-sub); margin-top: 4px; letter-spacing: 0.3px; }
+
+  #canvas-container { width: 100vw; height: 100vh; cursor: grab; }
+  #canvas-container:active { cursor: grabbing; }
+
+  #detail-panel { position: fixed; right: -440px; top: 0; bottom: 0; width: 420px; background: var(--galaxy-panel-bg); border-left: 1px solid var(--galaxy-panel-border); backdrop-filter: blur(20px); z-index: 200; transition: right 0.35s cubic-bezier(0.16,1,0.3,1); padding: 40px 32px; overflow-y: auto; }
+  #detail-panel.open { right: 0; }
+  #detail-panel .close-btn { position: absolute; top: 16px; right: 16px; background: none; border: 1px solid var(--galaxy-close-border); color: var(--galaxy-close-color); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  #detail-panel .close-btn:hover { background: var(--galaxy-btn-bg); color: var(--galaxy-heading); }
+  #detail-panel .theme-tag { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; margin-right: 6px; }
+  #detail-panel .tier-tag { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 12px; background: var(--galaxy-tier-bg); color: var(--galaxy-tier-color); border: 1px solid var(--galaxy-tier-border); }
+  #detail-panel .tier-tag.foundational { background: rgba(255,200,50,0.08); color: #c8a030; border-color: rgba(255,200,50,0.15); }
+  #detail-panel .author-name { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: var(--galaxy-heading); margin-top: 4px; margin-bottom: 4px; }
+  #detail-panel .field-tag { font-size: 12px; color: var(--galaxy-field-color); margin-bottom: 4px; font-style: italic; }
+  #detail-panel .work-title { font-size: 15px; font-style: italic; color: var(--galaxy-work-color); margin-bottom: 20px; }
+  #detail-panel .notes { font-size: 14px; line-height: 1.7; color: var(--galaxy-notes-color); margin-bottom: 24px; }
+  #detail-panel .connections { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--galaxy-panel-border); }
+  #detail-panel .connections h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--galaxy-field-color); margin-bottom: 12px; }
+  #detail-panel .connection-item { padding: 8px 0; font-size: 13px; color: var(--galaxy-conn-color); cursor: pointer; transition: color 0.2s; }
+  #detail-panel .connection-item:hover { color: var(--galaxy-heading); }
+  #detail-panel .connection-item .conn-tier { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--galaxy-btn-color); margin-left: 6px; }
+
+  #legend { position: fixed; bottom: 20px; left: 32px; z-index: 100; display: flex; gap: 16px; flex-wrap: wrap; max-width: 70%; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--galaxy-legend-color); letter-spacing: 0.3px; cursor: pointer; transition: color 0.2s; user-select: none; }
+  .legend-item:hover { color: var(--galaxy-btn-hover); }
+  .legend-item.dimmed { opacity: 0.3; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  #tier-legend { position: fixed; bottom: 48px; left: 32px; z-index: 100; display: flex; gap: 20px; font-size: 10px; color: var(--galaxy-instr-color); letter-spacing: 0.5px; text-transform: uppercase; }
+  .tier-indicator { display: flex; align-items: center; gap: 6px; }
+  .tier-circle { border-radius: 50%; border: 1.5px solid var(--galaxy-btn-color); }
+  .tier-circle.core { width: 12px; height: 12px; background: var(--galaxy-btn-bg); }
+  .tier-circle.satellite { width: 8px; height: 8px; background: none; border-style: dashed; }
+
+  #back-link { position: fixed; top: 20px; right: 32px; z-index: 200; }
+  #back-link a { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--galaxy-legend-color); text-decoration: none; letter-spacing: 0.3px; transition: color 0.2s; padding: 6px 14px; border: 1px solid var(--galaxy-btn-border); border-radius: 6px; background: var(--galaxy-link-bg); backdrop-filter: blur(10px); }
+  #back-link a:hover { color: #a490ff; border-color: rgba(164,144,255,0.3); }
+  #instructions { position: fixed; bottom: 20px; right: 32px; z-index: 100; font-size: 11px; color: var(--galaxy-instr-color); text-align: right; }
+  #pause-btn { position: fixed; bottom: 50px; right: 32px; z-index: 100; background: var(--galaxy-btn-bg); border: 1px solid var(--galaxy-btn-border); color: var(--galaxy-btn-color); padding: 6px 14px; border-radius: 6px; font-size: 10px; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  #pause-btn:hover { color: var(--galaxy-btn-hover); border-color: var(--galaxy-close-border); }
+
+  #detail-panel::-webkit-scrollbar { width: 4px; }
+  #detail-panel::-webkit-scrollbar-track { background: transparent; }
+  #detail-panel::-webkit-scrollbar-thumb { background: var(--galaxy-scrollbar); border-radius: 2px; }
+
+  /* Toggle switch for this page */
+  .galaxy-toggle { position: fixed; top: 22px; right: 180px; z-index: 300; }
+  .galaxy-toggle input { display: none; }
+  .galaxy-toggle label { display: block; width: 38px; height: 20px; background: rgba(255,255,255,0.15); border-radius: 10px; cursor: pointer; position: relative; transition: background 0.3s ease; }
+  html.light .galaxy-toggle label { background: rgba(0,0,0,0.15); }
+  .galaxy-toggle label::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: transform 0.3s ease, background 0.3s ease; }
+  html.light .galaxy-toggle label::after { background: #333; }
+  .galaxy-toggle input:checked + label::after { transform: translateX(18px); }
+
+  @keyframes anchorPulse {
+    0%, 100% { r: 10; fill-opacity: 0.12; }
+    50% { r: 16; fill-opacity: 0.04; }
+  }
+</style>
+</head>
+<body>
+<div class="galaxy-toggle">
+  <input type="checkbox" id="galaxy-color-mode">
+  <label for="galaxy-color-mode"></label>
+</div>
+<div id="back-link"><a href="index.html">← back to site</a></div>
+<div id="title-bar"><h1>Literature Galaxy</h1><p>AI, Urban Time Use, Autonomous Mobility & the Productivity Paradox — Cian McCarroll, PhD</p></div>
+<div id="canvas-container"><svg id="map-svg" width="100%" height="100%"></svg></div>
+<div id="detail-panel"><button class="close-btn" onclick="closePanel()">×</button><div id="panel-content"></div></div>
+<div id="tier-legend"><div class="tier-indicator"><div class="tier-circle core"></div> Foundational</div><div class="tier-indicator"><div class="tier-circle satellite"></div> Interlocutor</div></div>
+<div id="legend"></div>
+<button id="pause-btn" onclick="toggleAnimation()">Pause orbits</button>
+<div id="instructions">Click a node to explore · Scroll to zoom · Drag to pan</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+// ─── THEMES ─────────────────────────────────────────────────────────
+const themes = {
+  "Urban AI":       { color: "#4ecdc4", cx: 0.22, cy: 0.35, r: 0.23 },
+  "Time & Speed":   { color: "#ff6b6b", cx: 0.55, cy: 0.25, r: 0.24 },
+  "Surveillance":   { color: "#ffd93d", cx: 0.80, cy: 0.45, r: 0.20 },
+  "Urban Space":    { color: "#6c5ce7", cx: 0.30, cy: 0.72, r: 0.22 },
+  "Autonomy":       { color: "#a8e6cf", cx: 0.58, cy: 0.68, r: 0.20 }
+};
+
+// Anchor authors — one per theme, placed at dead centre
+const anchors = {
+  "Urban AI": "cugurullo",
+  "Time & Speed": "rosa",
+  "Surveillance": "zuboff",
+  "Urban Space": "lefebvre",  // Harvey also central but offset slightly
+  "Autonomy": "berardi"
+};
+
+// ─── AUTHORS ────────────────────────────────────────────────────────
+const authors = [
+  // ══════ FOUNDATIONAL ══════════════════════════════════════════════
+  // — Urban AI —
+  { id:"cugurullo", author:"Federico Cugurullo", title:"Frankenstein Urbanism / AI and the City / AIdeology", year:"2021–2026", tier:"foundational", anchor:true, themes:["Urban AI"],
+    notes:"Cugurullo's body of work anchors AI urbanism. Frankenstein Urbanism (2021) examines how smart cities are assembled from contradictory logics. AI and the City (2023, edited) explores how AI alters urban governance across 18 chapters. AIdeology (2026) argues AI functions as both technology and ideology, identifying three myths: AI will save the planet, AI is becoming human, and AI will end work." },
+  { id:"kitchin", author:"Rob Kitchin", title:"Code/Space / Data-Driven Urbanism", year:"2011–2017", tier:"foundational", themes:["Urban AI","Surveillance"],
+    notes:"Foundational work theorising how software and code produce and mediate space. Code/Space (with Dodge) introduces concepts of code/space and coded space. Data-driven urbanism analyses how urban data systems serve both state and corporate interests." },
+  { id:"graham-marvin", author:"Stephen Graham & Simon Marvin", title:"Splintering Urbanism", year:2001, tier:"foundational", themes:["Urban AI","Urban Space"],
+    notes:"How networked infrastructures fragment urban space, creating 'premium networked spaces' alongside bypassed zones of disconnection and exclusion. Foundational for understanding the spatial politics of digital infrastructure." },
+  { id:"crawford", author:"Kate Crawford", title:"Atlas of AI", year:2021, tier:"foundational", themes:["Urban AI","Surveillance"],
+    notes:"Maps AI's material infrastructure from lithium mines to data centres, revealing the planetary costs, exploitative labour, and concentrated power behind artificial intelligence systems." },
+  { id:"greenfield", author:"Adam Greenfield", title:"Against the Smart City", year:2013, tier:"foundational", themes:["Urban AI"],
+    notes:"Critical pamphlet unpacking smart city rhetoric, challenging corporate visions of blank-slate projects like New Songdo, Masdar City, and PlanIT Valley." },
+  { id:"mattern", author:"Shannon Mattern", title:"A City Is Not a Computer", year:2021, tier:"foundational", themes:["Urban AI","Urban Space"],
+    notes:"Argues against reducing cities to computational systems, advocating for recognition of diverse forms of urban intelligence beyond the digital and algorithmic." },
+  { id:"levitt", author:"Deborah Levitt", title:"The Animatic Apparatus", year:2018, tier:"foundational", themes:["Urban AI","Time & Speed"],
+    notes:"Theorises the convergence of animation, simulation, and digital media as a new regime of perception and urban experience, connecting machinic world-production to liveness and temporal manipulation." },
+
+  // — Time & Speed —
+  { id:"rosa", author:"Hartmut Rosa", title:"Social Acceleration / Resonance", year:"2013–2019", tier:"foundational", anchor:true, themes:["Time & Speed"],
+    notes:"Foundational theory identifying three interlocking forms of acceleration — technological, social change, and pace of life — producing totalitarianism through temporal norms. Resonance (2019) develops a counterpoint: responsive relationships with the world as essential to flourishing." },
+  { id:"hagerstrand", author:"Torsten Hägerstrand", title:"Time-Geography", year:1970, tier:"foundational", themes:["Time & Speed","Urban Space"],
+    notes:"Seminal work introducing time-geographic concepts of paths, prisms, and constraints. 'What about people in regional science?' questioned the field's neglect of individual human subjects in space-time." },
+  { id:"virilio", author:"Paul Virilio", title:"Speed and Politics", year:2006, tier:"foundational", themes:["Time & Speed"],
+    notes:"Foundational text in dromology (the study of speed), arguing that political power is fundamentally about control over speed and that military logistics drives urban and technological development." },
+  { id:"crary", author:"Jonathan Crary", title:"24/7: Late Capitalism and the Ends of Sleep", year:2013, tier:"foundational", themes:["Time & Speed","Surveillance"],
+    notes:"Argues that 24/7 capitalism erodes sleep as the last barrier to total market colonisation of human time, framing sleep as a site of resistance against non-stop productivity." },
+  { id:"wajcman", author:"Judy Wajcman", title:"Pressed for Time / The Sociology of Speed", year:"2014–2017", tier:"foundational", themes:["Time & Speed","Autonomy"],
+    notes:"Challenges technological determinism in accounts of time pressure, showing how digital technologies are socially shaped and that the experience of acceleration varies by gender, class, and occupation." },
+  { id:"thompson", author:"E.P. Thompson", title:"Time, Work-Discipline, and Industrial Capitalism", year:1967, tier:"foundational", themes:["Time & Speed","Autonomy"],
+    notes:"Classic historical analysis of how industrial capitalism transformed temporal consciousness, replacing task-oriented time with clock-discipline and establishing the temporal foundations of modern work." },
+
+  // — Surveillance —
+  { id:"zuboff", author:"Shoshana Zuboff", title:"The Age of Surveillance Capitalism", year:2019, tier:"foundational", anchor:true, themes:["Surveillance"],
+    notes:"Names and anatomises surveillance capitalism — a new economic logic extracting and commodifying behavioural data to predict and modify human behaviour at scale. Essential for understanding the political economy of urban AI." },
+  { id:"han", author:"Byung-Chul Han", title:"Psychopolitics", year:2017, tier:"foundational", themes:["Time & Speed","Surveillance"],
+    notes:"Argues neoliberal power operates through psychic self-exploitation. The 'achievement subject' internalises productivity demands, making surveillance feel like freedom. A bridge between temporal experience and digital control." },
+  { id:"pasquale", author:"Frank Pasquale", title:"The Black Box Society", year:2015, tier:"foundational", themes:["Surveillance"],
+    notes:"Analyses the opacity of algorithmic decision-making in finance and search, arguing that 'black box' systems undermine accountability and democratic oversight." },
+  { id:"noble", author:"Safiya Umoja Noble", title:"Algorithms of Oppression", year:2018, tier:"foundational", themes:["Surveillance","Autonomy"],
+    notes:"Demonstrates how search engine algorithms reproduce and amplify racial and gender biases, arguing that commercial AI systems perpetuate structural discrimination." },
+
+  // — Urban Space —
+  { id:"lefebvre", author:"Henri Lefebvre", title:"Rhythmanalysis / The Production of Space", year:"1974–1992", tier:"foundational", anchor:true, themes:["Urban Space","Time & Speed"],
+    notes:"Rhythmanalysis provides a method for reading the temporal textures of everyday urban life. The spatial triad (spatial practice, representations of space, representational spaces) offers a unified framework for thinking space-time politically." },
+  { id:"harvey", author:"David Harvey", title:"The Condition of Postmodernity / Between Space and Time", year:"1989–1990", tier:"foundational", anchor:true, themes:["Urban Space","Time & Speed"],
+    notes:"Introduces 'time-space compression' as a concept for understanding how capitalism accelerates and collapses spatial distances. Between Space and Time interrogates the social production of space-time under capitalism." },
+  { id:"brenner", author:"Neil Brenner", title:"New Urban Spaces", year:2004, tier:"foundational", themes:["Urban Space"],
+    notes:"Theory of state spatial restructuring and rescaling — the political-economic backbone for understanding how urban space is produced through governance, capital, and territorial strategy." },
+  { id:"soja", author:"Edward Soja", title:"Postmodern Geographies / Seeking Spatial Justice", year:"1989–2010", tier:"foundational", themes:["Urban Space"],
+    notes:"Reassertion of space in critical social theory — the 'socio-spatial dialectic.' Seeking Spatial Justice argues geography matters fundamentally for justice and that urban structures produce and are produced by inequalities." },
+  { id:"massey", author:"Doreen Massey", title:"For Space", year:2005, tier:"foundational", themes:["Urban Space","Autonomy"],
+    notes:"Reconceptualises space as the product of interrelations, as the sphere of multiplicity, and as always under construction — challenging static and bounded conceptions of place." },
+  { id:"castells", author:"Manuel Castells", title:"The Rise of the Network Society", year:1996, tier:"foundational", themes:["Urban Space","Time & Speed"],
+    notes:"Foundational text on the information age, theorising the 'space of flows' and 'timeless time' as new spatial and temporal logics of network society that restructure urban hierarchies." },
+  { id:"urry", author:"John Urry", title:"Mobilities", year:2007, tier:"foundational", themes:["Time & Speed","Urban Space"],
+    notes:"Foundational text establishing the 'mobilities paradigm,' arguing that social science must place movement — of people, objects, information, and images — at its analytical centre." },
+
+  // — Autonomy —
+  { id:"berardi", author:"Franco 'Bifo' Berardi", title:"Futurability", year:2017, tier:"foundational", anchor:true, themes:["Autonomy","Time & Speed"],
+    notes:"Explores possibility, potency, and power in semiocapitalism. Reclaiming the future requires a new relationship to time, affect, and collective imagination beyond the exhaustion of accelerated life." },
+  { id:"arendt", author:"Hannah Arendt", title:"The Human Condition", year:1958, tier:"foundational", themes:["Autonomy","Urban Space"],
+    notes:"Distinctions between labour, work, and action ground a political theory of human agency. The 'public realm' — the space of appearance where freedom is enacted — is foundational for thinking autonomy in urban contexts." },
+  { id:"srnicek", author:"Nick Srnicek", title:"Platform Capitalism", year:2016, tier:"foundational", themes:["Autonomy","Surveillance"],
+    notes:"Theorises platforms as a new business model of digital capitalism, classifying advertising, cloud, industrial, product, and lean platforms as extractive economic forms." },
+  { id:"latour", author:"Bruno Latour", title:"Reassembling the Social", year:2005, tier:"foundational", themes:["Urban AI","Autonomy"],
+    notes:"Foundational ANT text redefining sociology as the study of associations between human and nonhuman actors, arguing against reductive explanations that invoke 'the social' as an explanatory force." },
+
+  // ══════ INTERLOCUTORS ═════════════════════════════════════════════
+  // — Urban AI orbit —
+  { id:"caprotti", author:"Federico Caprotti", title:"Urban AI in China / Platform Urbanism", year:2022, tier:"interlocutor", field:"Human Geography", themes:["Urban AI","Urban Space"],
+    notes:"Examines whether urban AI in China represents state social control or hyper-capitalist development. Analyses Alibaba's City Brain as relational co-production between state and corporate actors.", orbitParentId:"cugurullo" },
+  { id:"marvin", author:"Simon Marvin", title:"Splintering Urbanism at 20", year:2022, tier:"interlocutor", field:"Urban Geography", themes:["Urban AI","Urban Space"],
+    notes:"Retrospective on the Splintering Urbanism thesis, mapping how the 'infrastructural turn' has extended and complicated the original arguments.", orbitParentId:"graham-marvin" },
+  { id:"guo", author:"Zongtian Guo", title:"Digital Governance", year:null, tier:"interlocutor", field:"Digital Governance", themes:["Urban AI","Surveillance"],
+    notes:"Research on digital governance examining how algorithmic systems reshape state-citizen relations and the politics of data-driven urban decision making.", orbitParentId:"kitchin" },
+  { id:"bei-chen", author:"Bei Chen", title:"Platform Urbanism", year:null, tier:"interlocutor", field:"Platform Urbanism", themes:["Urban AI","Time & Speed"],
+    notes:"Investigates how digital platforms restructure urban space, labour, and everyday life — the interplay between algorithmic management and temporal organisation of platform work.", orbitParentId:"cugurullo" },
+  { id:"coletta", author:"Claudio Coletta", title:"Algorhythmic Governance", year:2017, tier:"interlocutor", field:"Digital Geography", themes:["Urban AI","Time & Speed"],
+    notes:"Introduces 'algorhythmic governance' — how IoT systems regulate the temporal rhythms of city life. Uses Dublin's traffic management as case study. With Rob Kitchin.", orbitParentId:"kitchin" },
+  { id:"shelton", author:"Taylor Shelton", title:"The Actually Existing Smart City", year:2015, tier:"interlocutor", field:"Urban Geography", themes:["Urban AI","Urban Space"],
+    notes:"Adapts Brenner and Theodore's 'actually existing neoliberalism' framework to smart cities, grounding analysis in Louisville and Philadelphia.", orbitParentId:"greenfield" },
+  { id:"sadowski", author:"Jathan Sadowski", title:"Too Smart / Who Owns the Future City?", year:2020, tier:"interlocutor", field:"Digital Political Economy", themes:["Urban AI","Surveillance"],
+    notes:"Critical analysis of how digital capitalism extracts data from everyday life. Traces phases of technological urbanism from cybernetics to platform capitalism.", orbitParentId:"crawford" },
+  { id:"lee", author:"Hyun Jung Lee", title:"Seeing Like AI?", year:2025, tier:"interlocutor", field:"Critical Posthumanism", themes:["Urban AI","Autonomy"],
+    notes:"Critiques technocentric and political economy perspectives on AI urbanism using Braidotti's concepts of potestas and potentia to explore emergent power relations.", orbitParentId:"cugurullo" },
+  { id:"liang", author:"Fan Liang", title:"Constructing a Data-Driven Society", year:2018, tier:"interlocutor", field:"Digital Governance / China", themes:["Urban AI","Surveillance"],
+    notes:"First comprehensive empirical study of China's Social Credit System as state surveillance infrastructure, analysing how it constructs a data-driven society affecting 1.4 billion citizens.", orbitParentId:"kitchin" },
+  { id:"zeng", author:"Jinghan Zeng", title:"AI and China's Authoritarian Governance", year:2020, tier:"interlocutor", field:"International Relations / China", themes:["Urban AI","Surveillance"],
+    notes:"Analyses AI as part of China's authoritarian governance adaptation strategy, examining the advantages and risks of digital statecraft and technological authoritarianism.", orbitParentId:"cugurullo" },
+
+  // — Time & Speed orbit —
+  { id:"sharma", author:"Sarah Sharma", title:"In the Meantime", year:2014, tier:"interlocutor", field:"Temporal Cultural Politics", themes:["Time & Speed","Autonomy"],
+    notes:"Develops 'power-chronography' to analyse how temporal experiences are differentially distributed along lines of race, gender, and class, challenging universal acceleration narratives.", orbitParentId:"wajcman" },
+  { id:"vostal", author:"Filip Vostal", title:"Accelerating Academia", year:2016, tier:"interlocutor", field:"Sociology of Time", themes:["Time & Speed"],
+    notes:"Examines how acceleration reshapes academic labour, producing paradoxes of time scarcity amid efficiency-enhancing technologies in higher education.", orbitParentId:"rosa" },
+  { id:"southerton", author:"Dale Southerton", title:"Squeezing Time", year:2003, tier:"interlocutor", field:"Sociology of Practices", themes:["Time & Speed"],
+    notes:"Analyses how social coordination demands produce subjective time-squeeze, even when objective free time has not decreased.", orbitParentId:"rosa" },
+  { id:"chen-sun", author:"Julie Yujie Chen", title:"Temporal Arbitrage", year:null, tier:"interlocutor", field:"Labour Studies / Digital Sociology", themes:["Time & Speed","Surveillance"],
+    notes:"Reveals how platforms extract value through manipulation of workers' time — compressing, stretching, and fragmenting temporal experience to maximise profit. With Ping Sun.", orbitParentId:"crary" },
+  { id:"julsrud", author:"Tom Erik Julsrud", title:"Travel Time", year:null, tier:"interlocutor", field:"Mobility & Transport", themes:["Time & Speed"],
+    notes:"Research on how commuting and mobility are experienced, valued, and contested — connecting temporal autonomy to the politics of urban transport infrastructure.", orbitParentId:"urry" },
+  { id:"denstadli", author:"Jon Martin Denstadli", title:"Travel Time", year:null, tier:"interlocutor", field:"Mobility & Transport", themes:["Time & Speed"],
+    notes:"Investigates quantification and valuation of time in transit — whose time counts and how temporal experience is governed through transport policy.", orbitParentId:"urry" },
+  { id:"gaio", author:"Alex Gaio", title:"Mobility Studies", year:null, tier:"interlocutor", field:"Mobility Studies", themes:["Time & Speed","Urban Space"],
+    notes:"Engages with how movement, time, and space intersect in contemporary urban life — the temporal dimensions of commuting, logistics, and everyday mobility.", orbitParentId:"urry" },
+  { id:"ellegard", author:"Kajsa Ellegård", title:"Thinking Time Geography", year:2018, tier:"interlocutor", field:"Time Geography", themes:["Time & Speed","Urban Space"],
+    notes:"Comprehensive overview of time-geographic concepts, methodologies, and contemporary applications in understanding human activities and their spatiotemporal organisation.", orbitParentId:"hagerstrand" },
+  { id:"schwanen", author:"Tim Schwanen", title:"ICTs and Space-Time Constraints", year:2008, tier:"interlocutor", field:"Transport Geography", themes:["Time & Speed","Urban Space"],
+    notes:"Examines how ICTs modify space-time constraints on daily activities, finding that Internet and mobile phone use both relaxes and creates new forms of spatiotemporal fixity.", orbitParentId:"hagerstrand" },
+  { id:"bissell", author:"David Bissell", title:"Automating the City / Transit Life", year:2021, tier:"interlocutor", field:"Mobilities", themes:["Urban AI","Time & Speed"],
+    notes:"Examines 'autono-mobility' as a distributed system and commuting as a transformative experience that shapes urban subjectivities, challenging purely instrumental understandings of travel time.", orbitParentId:"levitt" },
+
+  // — Surveillance orbit —
+  { id:"safransky", author:"Sara Safransky", title:"Geographies of Algorithmic Violence", year:2020, tier:"interlocutor", field:"Urban Geography", themes:["Surveillance","Urban Space"],
+    notes:"Examines how smart city technologies reproduce spatial inequality through 'algorithmic violence', connecting digital redlining to historical patterns of racial discrimination.", orbitParentId:"zuboff" },
+  { id:"rosenblat", author:"Alex Rosenblat", title:"Uberland", year:2018, tier:"interlocutor", field:"Technology & Labour", themes:["Surveillance","Time & Speed"],
+    notes:"Ethnographic study of Uber's algorithmic management, revealing how platform design creates information asymmetries and new forms of labour control disguised as flexibility.", orbitParentId:"zuboff" },
+  { id:"eubanks", author:"Virginia Eubanks", title:"Automating Inequality", year:2018, tier:"interlocutor", field:"Digital Justice", themes:["Surveillance","Autonomy"],
+    notes:"Investigates how automated decision systems in welfare, child services, and housing disproportionately harm poor communities — a 'digital poorhouse.'", orbitParentId:"noble" },
+
+  // — Urban Space orbit —
+  { id:"mcfarlane", author:"Colin McFarlane", title:"Assemblage and Critical Urbanism", year:2011, tier:"interlocutor", field:"Urban Studies", themes:["Urban Space","Urban AI"],
+    notes:"Develops assemblage thinking as a tool for critical urbanism, illuminating the relational, emergent, and political dimensions of urban processes.", orbitParentId:"latour" },
+  { id:"sassen", author:"Saskia Sassen", title:"The Global City", year:2001, tier:"interlocutor", field:"Urban Sociology", themes:["Urban Space","Surveillance"],
+    notes:"How global cities concentrate advanced services and financial power while generating inequality as strategic command centres for the world economy.", orbitParentId:"castells" },
+  { id:"sheller", author:"Mimi Sheller", title:"Mobility Justice", year:2018, tier:"interlocutor", field:"Mobilities", themes:["Urban Space","Autonomy"],
+    notes:"Develops 'mobility justice' connecting transport equity, migration, climate change, and digital access across multiple scales of movement.", orbitParentId:"massey" },
+
+  // — Autonomy orbit —
+  { id:"standing", author:"Guy Standing", title:"The Precariat", year:2011, tier:"interlocutor", field:"Political Economy", themes:["Autonomy","Time & Speed"],
+    notes:"Analyses the emergence of a new class characterised by insecure work, lack of occupational identity, and truncated rights — a defining social formation of neoliberal globalisation.", orbitParentId:"berardi" },
+  { id:"gray", author:"Mary L. Gray", title:"Ghost Work", year:2019, tier:"interlocutor", field:"Digital Labour", themes:["Autonomy","Surveillance"],
+    notes:"Five-year empirical study of invisible human labour powering AI and digital platforms, coining 'ghost work' to describe the precarious microtask economy. With Siddharth Suri.", orbitParentId:"srnicek" },
+  { id:"karvonen2019", author:"Karvonen", title:"Inside Smart Cities: Place", year:2019, tier:"interlocutor", themes:["Urban AI"], notes:"Case studies of smart city creation at neighbourhood, city and regional scales, examining how local authorities, businesses, utilities, and civil society shape smart city intensification.", orbitParentId:"cugurullo" },
+  { id:"allam2019", author:"Allam", title:"On big data", year:2019, tier:"interlocutor", themes:["Urban AI"], notes:"Conceptualises smart cities as the convergence of technology, policy, market, and societal forces, illustrating how these elements collectively shape urban development.", orbitParentId:"cugurullo" },
+  { id:"yigitcanlar2020", author:"Yigitcanlar", title:"Contributions and risks of artificial intelligence (AI) i", year:2020, tier:"interlocutor", themes:["Urban AI"], notes:"Systematic review of 93 articles examining how AI contributes to smart city development across economy, society, environment, and governance dimensions.", orbitParentId:"cugurullo" },
+  { id:"luusua2023", author:"Luusua", title:"Urban AI: Understanding the emerging role of artificial i", year:2023, tier:"interlocutor", themes:["Urban AI"], notes:"Editorial introduction to a special issue on how AI integrates into cities, discussing privacy concerns and the holistic incorporation of urban AI into contemporary and future urban contexts.", orbitParentId:"cugurullo" },
+  { id:"gaffney2018", author:"Gaffney", title:"Smarter than smart: Rio de Janeiro", year:2018, tier:"interlocutor", themes:["Urban AI"], notes:"Critically examines the implementation of smart city systems in Rio de Janeiro during Olympic preparations, revealing flaws in corporate-led smart city strategy.", orbitParentId:"cugurullo" },
+  { id:"cowley2018", author:"Cowley", title:"The smart city and its publics: Insights from across six ", year:2018, tier:"interlocutor", themes:["Urban AI"], notes:"Explores smart city publicness across Bristol, Glasgow, London, Manchester, Milton Keynes, and Peterborough, analysing smart city programmes as techno-public assemblages.", orbitParentId:"cugurullo" },
+  { id:"mcneill2016", author:"McNeill", title:"IBM and the visual formation of smart cities", year:2016, tier:"interlocutor", themes:["Urban AI"], notes:"Examines IBM\'s role in constructing visual narratives and corporate discourse around smart city technologies and urban transformation.", orbitParentId:"cugurullo" },
+  { id:"wiig2015", author:"Wiig", title:"IBM", year:2015, tier:"interlocutor", themes:["Urban AI"], notes:"Analyses IBM\'s Smarter Cities Challenge using Philadelphia\'s Digital On-Ramps initiative, arguing that cities are key actors in advancing smart city policy adoption and circulation.", orbitParentId:"cugurullo" },
+  { id:"datta2015", author:"Datta", title:"New urban utopias of postcolonial India: ", year:2015, tier:"interlocutor", themes:["Urban AI"], notes:"Examines India\'s first smart city project, tracing how global smart city models are adapted through local histories and demonstrating how entrepreneurial urbanism prioritises business models over social justice.", orbitParentId:"cugurullo" },
+  { id:"soderstrom2014", author:"Soderstrom", title:"Smart cities as corporate storytelling", year:2014, tier:"interlocutor", themes:["Urban AI"], notes:"Analyses IBM\'s smarter city campaign as corporate storytelling aimed at making IBM an obligatory passage point in urban technology implementation.", orbitParentId:"cugurullo" },
+  { id:"white2016", author:"White", title:"Anticipatory logics of the smart city", year:2016, tier:"interlocutor", themes:["Urban AI"], notes:"Identifies pre-emption, precaution, and preparedness as central anticipatory logics driving smart city narratives and rationalising technological intervention in the urban present.", orbitParentId:"cugurullo" },
+  { id:"cardullo2019", author:"Cardullo", title:"Being a ", year:2019, tier:"interlocutor", themes:["Urban AI"], notes:"Develops the \'Scaffold of Smart Citizen Participation\' to analyse how smart city initiatives in Dublin frame citizens, revealing neoliberal citizenship prioritising consumption over rights.", orbitParentId:"cugurullo" },
+  { id:"thulin2020", author:"Thulin", title:"Absent friends? Smartphones", year:2020, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"From section: Time Geography, Temporal Experience, and Digital Technology", orbitParentId:"hagerstrand" },
+  { id:"kwan2004", author:"Kwan", title:"GIS methods in time-geographic research: Geocomputation a", year:2004, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Demonstrates how GIS and 3D geovisualisation can operationalise time-geographic concepts, enabling computational analysis of individual activity patterns in space-time.", orbitParentId:"hagerstrand" },
+  { id:"miller2005", author:"Miller", title:"A measurement theory for time geography", year:2005, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Develops a formal measurement theory for time-geographic concepts including the space-time prism, providing mathematical foundations for quantitative time-geographic analysis.", orbitParentId:"hagerstrand" },
+  { id:"miller2009", author:"Miller", title:"A field-based theory for time geography", year:2009, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Proposes a field-based extension of time geography that represents accessibility as continuous fields rather than discrete prisms, enabling richer spatial analysis.", orbitParentId:"hagerstrand" },
+  { id:"sui2012", author:"Sui", title:"Looking through Hägerstrand", year:2012, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Argues for unifying Hägerstrand\'s quantitative and qualitative contributions into a single framework, bridging the gap between positivist and humanistic time-geography.", orbitParentId:"hagerstrand" },
+  { id:"shaw2009", author:"Shaw", title:"A GIS-based time-geographic approach of studying individu", year:2009, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"From section: Time Geography, Temporal Experience, and Digital Technology", orbitParentId:"hagerstrand" },
+  { id:"couclelis2009", author:"Couclelis", title:"Rethinking time geography in the information age", year:2009, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Argues that ICTs fundamentally alter the coupling and authority constraints central to classical time-geography, requiring theoretical renovation for the information age.", orbitParentId:"hagerstrand" },
+  { id:"neutens2011", author:"Neutens", title:"The prism of everyday life: Towards a new research agenda", year:2011, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Review and research agenda proposing that time geography needs to better integrate social exclusion, subjective experience, and institutional constraints beyond transport.", orbitParentId:"hagerstrand" },
+  { id:"pred1977", author:"Pred", title:"The choreography of existence: Comments on Hägerstrand", year:1977, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Early critical engagement with Hägerstrand\'s framework, arguing for its utility in understanding the \'choreography\' of daily life while noting limitations in capturing power and social structure.", orbitParentId:"hagerstrand" },
+  { id:"lenntorp1976", author:"Lenntorp", title:"Paths in Space-Time Environments: A Time-Geographic Study", year:1976, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Foundational monograph developing computational methods for calculating space-time prisms and movement possibilities, a methodological pillar of quantitative time-geography.", orbitParentId:"hagerstrand" },
+  { id:"vilhelmson2008", author:"Vilhelmson", title:"Virtual mobility", year:2008, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Examines how virtual mobility via ICTs restructures time use and the role of the home as a site of activity, finding both substitution and complementarity effects.", orbitParentId:"hagerstrand" },
+  { id:"sianowicka2016", author:"Siła-Nowicka", title:"Analysis of human mobility patterns from GPS trajectories", year:2016, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"From section: Time Geography, Temporal Experience, and Digital Technology", orbitParentId:"hagerstrand" },
+  { id:"dodge2021", author:"Dodge", title:"A data science framework for movement", year:2021, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Proposes computational methods for analysing movement patterns using modern data science approaches and IoT sensor data, bridging GIScience and data science.", orbitParentId:"hagerstrand" },
+  { id:"long2013", author:"Long", title:"Measuring dynamic interaction in movement data", year:2013, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Develops methods for measuring dynamic spatial interactions between moving objects, advancing movement analytics for understanding coordination and avoidance patterns.", orbitParentId:"hagerstrand" },
+  { id:"adams1995", author:"Adams", title:"A reconsideration of personal boundaries in space-time", year:1995, tier:"interlocutor", themes:["Time & Speed", "Urban Space"], notes:"Reconceptualises personal boundaries in Hägerstrand\'s framework to account for communications technologies that extend presence beyond the physical body.", orbitParentId:"hagerstrand" },
+  { id:"adam1998", author:"Adam", title:"Timescapes of Modernity: The Environment and Invisible Ha", year:1998, tier:"interlocutor", themes:["Time & Speed"], notes:"Develops the concept of \'timescapes\' to capture the temporal complexity of environmental hazards, arguing that industrial time\'s linear assumptions render ecological temporalities invisible.", orbitParentId:"rosa" },
+  { id:"adam2004", author:"Adam", title:"Time", year:2004, tier:"interlocutor", themes:["Time & Speed"], notes:"Comprehensive social theory of time integrating natural, social, and cultural dimensions, providing a foundational text for interdisciplinary temporal analysis.", orbitParentId:"rosa" },
+  { id:"nowotny1994", author:"Nowotny", title:"Time: The Modern and Postmodern Experience", year:1994, tier:"interlocutor", themes:["Time & Speed"], notes:"Analyses how the experience of time shifts from modern linear progress to postmodern simultaneity and pluralisation, linking temporal transformation to broader cultural change.", orbitParentId:"rosa" },
+  { id:"hassan2009", author:"Hassan", title:"Empires of Speed: Time and the Acceleration of Politics a", year:2009, tier:"interlocutor", themes:["Time & Speed"], notes:"Examines how networked computing societies produce new \'empires of speed\' that transform political and social temporalities, reshaping the experience of modern life.", orbitParentId:"rosa" },
+  { id:"milakis2017", author:"Milakis", title:"Policy and society related implications of automated driv", year:2017, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"From section: Autonomous Vehicles, Robotaxis, and Urban Mobility", orbitParentId:"cugurullo" },
+  { id:"milakis2017b", author:"Milakis", title:"Development and transport implications of automated vehic", year:2017, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"From section: Autonomous Vehicles, Robotaxis, and Urban Mobility", orbitParentId:"cugurullo" },
+  { id:"singleton2019", author:"Singleton", title:"Discussing the ", year:2019, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Critical analysis questioning whether travellers will actually use freed-up travel time productively in AVs, suggesting value-of-time impacts may be more modest than anticipated.", orbitParentId:"cugurullo" },
+  { id:"steck2018", author:"Steck", title:"How autonomous driving may affect the value of travel tim", year:2018, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"From section: Autonomous Vehicles, Robotaxis, and Urban Mobility", orbitParentId:"cugurullo" },
+  { id:"pudane2018", author:"Pudane", title:"A time-use model for the automated vehicle-era", year:2018, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Develops an optimisation model capturing time-use effects when travellers can perform on-board activities in autonomous vehicles, modelling activity scheduling in the AV era.", orbitParentId:"rosa" },
+  { id:"childress2015", author:"Childress", title:"Using an activity-based model to explore the potential im", year:2015, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Activity-based model for the Seattle region testing impacts of AV technology on travel behaviour, network performance, and regional transport demand.", orbitParentId:"cugurullo" },
+  { id:"wadud2022", author:"Wadud", title:"Social implications of autonomous vehicles: A focus on time", year:2022, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Examines the social implications of AVs with particular focus on how freed travel time is redistributed and its distributional impacts across income levels.", orbitParentId:"rosa" },
+  { id:"soteropoulos2019", author:"Soteropoulos", title:"Impacts of automated vehicles on travel behaviour and lan", year:2019, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"International review finding that private AVs tend to increase vehicle-miles travelled while shared AVs could reduce parking demand and encourage densification.", orbitParentId:"cugurullo" },
+  { id:"fagnant2015", author:"Fagnant", title:"Preparing a nation for autonomous vehicles: Opportunities", year:2015, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Comprehensive examination of AV opportunities (safety, reduced congestion) and barriers (liability, privacy, regulatory inconsistencies) with policy recommendations.", orbitParentId:"cugurullo" },
+  { id:"fraedrich2016", author:"Fraedrich", title:"User perspectives on autonomous driving: A use-case-drive", year:2016, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Use-case-driven study of German user perspectives on autonomous driving, examining attitudes across four AV scenarios and identifying key acceptance factors.", orbitParentId:"cugurullo" },
+  { id:"haboucha2017", author:"Haboucha", title:"User preferences regarding autonomous vehicles", year:2017, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Stated-preference study of 721 respondents showing early AV adopters are likely to be young and educated, with notable preference differences between Israeli and North American participants.", orbitParentId:"cugurullo" },
+  { id:"correia2019", author:"Correia", title:"On the impact of vehicle automation on the value of trave", year:2019, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"From section: Autonomous Vehicles, Robotaxis, and Urban Mobility", orbitParentId:"cugurullo" },
+  { id:"liu2023", author:"Liu", title:"Impacts of connected and autonomous vehicles on urban tra", year:2023, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Comprehensive review of CAV impacts on urban transportation systems and environmental outcomes, synthesising modelling and empirical evidence.", orbitParentId:"cugurullo" },
+  { id:"ma2024", author:"Ma", title:"Robotaxi service: The transition and governance investiga", year:2024, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Examines the four-phase transition of robotaxi services in China, focusing on governance frameworks, labour transition challenges, and retraining mechanisms.", orbitParentId:"cugurullo" },
+  { id:"zhang2017", author:"Zhang", title:"Parking spaces in the age of shared autonomous vehicles: ", year:2017, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Agent-based simulation showing shared AVs could significantly reduce parking demand in Atlanta, though displaced parking may concentrate in lower-income neighbourhoods.", orbitParentId:"cugurullo" },
+  { id:"harper2016", author:"Harper", title:"Estimating potential increases in travel with autonomous ", year:2016, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"From section: Autonomous Vehicles, Robotaxis, and Urban Mobility", orbitParentId:"cugurullo" },
+  { id:"kolarova2019", author:"Kolarova", title:"Assessing travel time savings and user benefits of automa", year:2019, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"From section: Autonomous Vehicles, Robotaxis, and Urban Mobility", orbitParentId:"rosa" },
+  { id:"currie2018", author:"Currie", title:"Lies", year:2018, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Critical perspective challenging optimistic narratives about AV benefits for public transit, arguing the rhetoric of transit obsolescence ignores empirical realities.", orbitParentId:"cugurullo" },
+  { id:"zakharenko2016", author:"Zakharenko", title:"Self-driving cars will change cities", year:2016, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Economic model predicting that AVs will optimise parking location, reduce commute costs, increase city size, and fundamentally alter urban land rent distribution.", orbitParentId:"cugurullo" },
+  { id:"alessandrini2015", author:"Alessandrini", title:"Automated vehicles and the rethinking of mobility and cities", year:2015, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"CityMobil2 project exploring automated vehicle scenarios and impacts on European cities, examining parking, accessibility, and safety benefits of urban automation.", orbitParentId:"cugurullo" },
+  { id:"kellerman2018", author:"Kellerman", title:"Automated and Autonomous Spatial Mobilities", year:2018, tier:"interlocutor", themes:["Time & Speed", "Urban AI"], notes:"Monograph exploring the social and urban implications of automated and autonomous spatial mobilities, covering historical development and future predictions.", orbitParentId:"cugurullo" },
+  { id:"creemers2018", author:"Creemers", title:"China", year:2018, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Examines the SCS as an ecosystem of complementary initiatives sharing underlying control logics, analysing the objectives and mechanisms of Chinese government\'s social credit vision.", orbitParentId:"cugurullo" },
+  { id:"kostka2019", author:"Kostka", title:"China", year:2019, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Survey-based research finding surprisingly high approval (around 80%) of social credit systems among Chinese citizens, particularly educated urban residents who see benefits in trust-building.", orbitParentId:"cugurullo" },
+  { id:"jia2022", author:"Jia", title:"The Chinese platform business group: An alternative to th", year:2022, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Identifies the \'platform business group\' as a distinctive Chinese organisational form for platform development, contrasting it with Silicon Valley models of platform capitalism.", orbitParentId:"cugurullo" },
+  { id:"aho2020", author:"Aho", title:"Beyond surveillance capitalism: Privacy", year:2020, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Comparative analysis of two responses to surveillance: Europe\'s GDPR regulatory approach and China\'s social credit system, complicating Zuboff\'s surveillance capitalism thesis.", orbitParentId:"cugurullo" },
+  { id:"pan2020", author:"Pan", title:"From fighting COVID-19 pandemic to tackling sustainable d", year:2020, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"From section: China, Wuhan, and AI-Driven Urban Governance", orbitParentId:"cugurullo" },
+  { id:"hollands2008", author:"Hollands", title:"Will the real smart city please stand up?", year:2008, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Early and influential critique questioning corporate smart city rhetoric, calling for attention to the gap between marketing discourse and the lived experience of urban technology.", orbitParentId:"kitchin" },
+  { id:"hollands2015", author:"Hollands", title:"Critical interventions into the corporate smart city", year:2015, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Extends the 2008 critique with analysis of corporate smart city agendas, examining how technology companies shape urban development and governance.", orbitParentId:"kitchin" },
+  { id:"vanolo2014", author:"Vanolo", title:"Smartmentality: The smart city as disciplinary strategy", year:2014, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Applies Foucauldian governmentality theory to smart cities, arguing that \'smartmentality\' functions as a disciplinary strategy that normalises certain forms of urban conduct.", orbitParentId:"kitchin" },
+  { id:"evans2016", author:"Evans", title:"The Experimental City", year:2016, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Edited collection examining how cities function as sites of experimentation in governance, sustainability, and technology, developing the concept of urban experimentation.", orbitParentId:"kitchin" },
+  { id:"ash2019", author:"Ash", title:"Digital Geographies", year:2019, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Comprehensive edited volume establishing digital geographies as a subfield, examining how digital technologies transform spatial practices, knowledge, and governance.", orbitParentId:"kitchin" },
+  { id:"thatcher2016", author:"Thatcher", title:"Data colonialism through accumulation by dispossession: N", year:2016, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Applies Harvey\'s \'accumulation by dispossession\' to everyday data capture, arguing that data extraction represents a new form of colonialism operating through digital platforms.", orbitParentId:"kitchin" },
+  { id:"shaw2017", author:"Shaw", title:"An informational right to the city? Code", year:2017, tier:"interlocutor", themes:["Urban AI", "Surveillance"], notes:"Extends Lefebvre\'s right to the city into the digital realm, examining how code and information are urbanised and proposing an informational right to the city.", orbitParentId:"kitchin" },
+  { id:"brynjolfsson2018", author:"Brynjolfsson", title:"Artificial intelligence and the modern productivity parad", year:2018, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"From section: The Productivity Paradox, AI and Labour", orbitParentId:"berardi" },
+  { id:"brynjolfsson2014", author:"Brynjolfsson", title:"The Second Machine Age: Work", year:2014, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Argues that digital technologies represent a second machine age with exponential, digital, and combinatorial properties that will transform work and productivity in ways comparable to the industrial revolution.", orbitParentId:"berardi" },
+  { id:"brynjolfsson2017", author:"Brynjolfsson", title:"Machine", year:2017, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Examines three major technological shifts -- machine intelligence, platform economics, and crowd-based innovation -- and their implications for business strategy and economic organisation.", orbitParentId:"berardi" },
+  { id:"acemoglu2019", author:"Acemoglu", title:"Automation and new tasks: How technology displaces and re", year:2019, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Develops a task-based framework showing automation displaces labour from existing tasks while simultaneously creating new tasks, with net employment effects depending on the balance between these forces.", orbitParentId:"berardi" },
+  { id:"acemoglu2020", author:"Acemoglu", title:"Robots and jobs: Evidence from US labor markets", year:2020, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Empirical analysis finding that industrial robot adoption reduces employment and wages in exposed US commuting zones, with one robot per thousand workers reducing employment by 0.2%.", orbitParentId:"berardi" },
+  { id:"acemoglu2024", author:"Acemoglu", title:"The simple macroeconomics of AI", year:2024, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Evaluates macroeconomic implications of AI, finding modest projected productivity gains (0.66% TFP increase over 10 years) unless AI achieves much broader task automation than currently evident.", orbitParentId:"berardi" },
+  { id:"autor2015", author:"Autor", title:"Why are there still so many jobs? The history and future ", year:2015, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Addresses the automation paradox -- why employment persists despite technological change -- arguing that automation complements rather than simply substitutes for human labour in most occupations.", orbitParentId:"berardi" },
+  { id:"autor2022", author:"Autor", title:"The Work of the Future: Building Better Jobs in an Age of", year:2022, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"MIT Task Force report examining how intelligent machines will reshape work, arguing for institutional reforms to ensure technological gains are broadly shared.", orbitParentId:"berardi" },
+  { id:"frey2017", author:"Frey", title:"The future of employment: How susceptible are jobs to com", year:2017, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Highly influential study estimating 47% of US jobs are at high risk of automation, based on task-level analysis of occupational susceptibility to computerisation.", orbitParentId:"berardi" },
+  { id:"frey2019", author:"Frey", title:"The Technology Trap: Capital", year:2019, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Historical analysis of how technological change creates winners and losers, arguing that automation\'s distributive consequences depend on political and institutional responses.", orbitParentId:"berardi" },
+  { id:"susskind2020", author:"Susskind", title:"A World Without Work: Technology", year:2020, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Argues that technological unemployment is a genuine long-term risk, proposing policy responses including conditional basic income and rethinking the social value of non-work activities.", orbitParentId:"berardi" },
+  { id:"keynes1930", author:"Keynes", title:"Economic possibilities for our grandchildren", year:1930, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Classic essay predicting that technological progress would solve the \'economic problem\' within a century, enabling 15-hour work weeks -- a prophecy that frames contemporary debates about AI and leisure.", orbitParentId:"berardi" },
+  { id:"solow1987", author:"Solow", title:"We", year:1987, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Contains Solow\'s famous observation that \'you can see the computer age everywhere but in the productivity statistics,\' crystallising the original productivity paradox that AI debates now echo.", orbitParentId:"berardi" },
+  { id:"gordon2016", author:"Gordon", title:"The Rise and Fall of American Growth", year:2016, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Comprehensive economic history arguing that the transformative innovations of 1870--1970 were unique and that recent digital technologies produce comparatively modest productivity gains.", orbitParentId:"berardi" },
+  { id:"agrawal2018", author:"Agrawal", title:"Prediction Machines: The Simple Economics of Artificial I", year:2018, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Reframes AI as a technology that dramatically reduces the cost of prediction, providing an economic framework for understanding AI\'s impact on business decisions and labour.", orbitParentId:"berardi" },
+  { id:"agrawal2019", author:"Agrawal", title:"The Economics of Artificial Intelligence: An Agenda", year:2019, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Edited collection setting the research agenda for the economics of AI, bringing together economists to examine AI\'s implications for productivity, labour, and innovation.", orbitParentId:"berardi" },
+  { id:"arntz2016", author:"Arntz", title:"The risk of automation for jobs in OECD countries: A comp", year:2016, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Task-based analysis finding that only 9% of OECD jobs face high automation risk (compared to Frey and Osborne\'s 47%), because most occupations contain a mix of automatable and non-automatable tasks.", orbitParentId:"berardi" },
+  { id:"nedelkoska2018", author:"Nedelkoska", title:"Automation", year:2018, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Estimates 14% of jobs across OECD countries are highly automatable and another 32% face significant changes, emphasising the importance of training and skills policies.", orbitParentId:"berardi" },
+  { id:"eloundou2024", author:"Eloundou", title:"GPTs are GPTs: An early look at the labor market impact p", year:2024, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Framework assessing LLM exposure across jobs, finding 46% of US jobs could have over half their tasks affected when accounting for complementary software tools built on LLMs.", orbitParentId:"berardi" },
+  { id:"spencer2018", author:"Spencer", title:"Fear and hope in an age of mass automation: Debating the ", year:2018, tier:"interlocutor", themes:["Autonomy", "Time & Speed"], notes:"Examines both dystopian and utopian narratives around automation, arguing for attention to the political-economic conditions that determine whether technology liberates or subordinates workers.", orbitParentId:"berardi" },
+  { id:"wood2019", author:"Wood", title:"Good gig", year:2019, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Multi-country study of platform work finding that algorithmic control simultaneously provides flexibility and intensifies surveillance, with outcomes varying by worker positioning.", orbitParentId:"srnicek" },
+  { id:"woodcock2019", author:"Woodcock", title:"The Gig Economy: A Critical Introduction", year:2019, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Comprehensive critical overview of the gig economy\'s formation, labour dynamics, and resistance movements, examining platforms from worker rather than consumer perspectives.", orbitParentId:"srnicek" },
+  { id:"veen2020", author:"Veen", title:"Platform-capital", year:2020, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Labour process analysis of food-delivery platforms in Australia, revealing how app-based management exercises control over workers classified as independent contractors.", orbitParentId:"srnicek" },
+  { id:"bastani2019", author:"Bastani", title:"Fully Automated Luxury Communism: A Manifesto", year:2019, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Political manifesto arguing that technological abundance (AI, renewable energy, asteroid mining) could enable a post-scarcity communist society if freed from capitalist constraints.", orbitParentId:"srnicek" },
+  { id:"mason2015", author:"Mason", title:"PostCapitalism: A Guide to Our Future", year:2015, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Economic analysis arguing that information technology is fundamentally incompatible with capitalism because information goods have near-zero marginal costs, enabling post-capitalist alternatives.", orbitParentId:"srnicek" },
+  { id:"dyerwitheford2015", author:"Dyer-Witheford", title:"Cyber-Proletariat: Global Labour in the Digital Vortex", year:2015, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Marxist analysis of how digital technologies create a global \'cyber-proletariat\', tracing circuits of exploitation from coltan mines to e-waste dumps via platform labour.", orbitParentId:"srnicek" },
+  { id:"scholz2016", author:"Scholz", title:"Platform Cooperativism: Challenging the Corporate Sharing", year:2016, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Proposes cooperative ownership models for digital platforms as alternatives to extractive corporate platforms, outlining principles for democratic platform governance.", orbitParentId:"srnicek" },
+  { id:"casilli2019", author:"Casilli", title:"En attendant les robots: Enquête sur le travail du clic", year:2019, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"French-language study documenting the hidden human \'click work\' behind AI systems, revealing how microtask labour sustains the illusion of autonomous machine intelligence.", orbitParentId:"srnicek" },
+  { id:"schor2017", author:"Schor", title:"The ", year:2017, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Analyses labour conditions and inequalities across sharing economy platforms, questioning whether platform economies deliver on promises of community and flexibility.", orbitParentId:"srnicek" },
+  { id:"destefano2016", author:"De Stefano", title:"The rise of the ", year:2016, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Legal and labour analysis of how on-demand platforms create \'just-in-time\' workforces that evade traditional labour protections and employment classification.", orbitParentId:"srnicek" },
+  { id:"gandini2019", author:"Gandini", title:"Labour process theory and the gig economy", year:2019, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Applies Marxist labour process theory to gig economy platforms, examining how algorithmic management transforms the traditional dynamics of workplace control and resistance.", orbitParentId:"srnicek" },
+  { id:"ivanova2018", author:"Ivanova", title:"The App as a Boss? Control and Autonomy in Application-Ba", year:2018, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Research on app-based management examining how platform algorithms exercise boss-like control over food-delivery riders while maintaining the fiction of self-employment.", orbitParentId:"srnicek" },
+  { id:"richardson2020", author:"Richardson", title:"Platforms", year:2020, tier:"interlocutor", themes:["Surveillance", "Autonomy"], notes:"Ethnographic study of Deliveroo\'s platform coordination of meal delivery, examining how algorithmic systems organise contingent market calculations across workers, restaurants, and consumers.", orbitParentId:"srnicek" },
+  { id:"callon1984", author:"Callon", title:"Some elements of a sociology of translation: Domesticatio", year:1984, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Seminal ANT paper introducing the four \'moments of translation\' -- problematisation, interessement, enrolment, and mobilisation -- through the case of scallop fishing.", orbitParentId:"latour" },
+  { id:"law1992", author:"Law", title:"Notes on the theory of the actor-network: Ordering", year:1992, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Foundational theoretical statement on ANT, describing how heterogeneous actor-networks achieve stability through strategies of ordering and translation.", orbitParentId:"latour" },
+  { id:"haraway1991", author:"Haraway", title:"Simians", year:1991, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Collection including the influential \'Cyborg Manifesto,\' theorising the cyborg as a political figure that dissolves boundaries between human, animal, and machine.", orbitParentId:"latour" },
+  { id:"haraway2016", author:"Haraway", title:"Staying with the Trouble: Making Kin in the Chthulucene", year:2016, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Develops the concept of the \'Chthulucene\' as an alternative to the Anthropocene, advocating multispecies \'making kin\' and staying with rather than resolving ecological trouble.", orbitParentId:"latour" },
+  { id:"braidotti2013", author:"Braidotti", title:"The Posthuman", year:2013, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Develops a critical posthumanist framework arguing that the \'human\' of humanism was always exclusionary, proposing affirmative posthuman subjectivity as ethics for our times.", orbitParentId:"latour" },
+  { id:"braidotti2019", author:"Braidotti", title:"Posthuman Knowledge", year:2019, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Extends posthuman theory to epistemology, examining how posthuman subjects produce knowledge in the context of advanced capitalism and the Fourth Industrial Revolution.", orbitParentId:"latour" },
+  { id:"hayles1999", author:"Hayles", title:"How We Became Posthuman: Virtual Bodies in Cybernetics", year:1999, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Influential history tracing how information lost its body through three waves of cybernetics, arguing for embodied approaches to human-technology relations against disembodied information paradigms.", orbitParentId:"latour" },
+  { id:"bennett2010", author:"Bennett", title:"Vibrant Matter: A Political Ecology of Things", year:2010, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Develops \'vital materialism\' arguing that matter has agency and vitality, with implications for how we understand nonhuman actors in urban and political contexts.", orbitParentId:"latour" },
+  { id:"coole2010", author:"Coole", title:"New Materialisms: Ontology", year:2010, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Edited collection introducing new materialist approaches that rethink the relationship between ontology, agency, and politics beyond the linguistic and cultural turns.", orbitParentId:"latour" },
+  { id:"amin2002", author:"Amin", title:"Cities: Reimagining the Urban", year:2002, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Urban theory emphasising cities as composed of \'soft infrastructures\' and affective geographies, calling for approaches that capture the urban as relational, processual, and more-than-human.", orbitParentId:"latour" },
+  { id:"farias2010", author:"Farias", title:"Urban Assemblages: How Actor-Network Theory Change", year:2010, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Edited collection demonstrating how ANT and assemblage thinking can transform urban studies by attending to the heterogeneous human-nonhuman networks that constitute cities.", orbitParentId:"latour" },
+  { id:"hinchliffe2006", author:"Hinchliffe", title:"Living cities: Towards a politics of conviviality", year:2006, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Advocates for a politics of \'conviviality\' that recognises multispecies urban coexistence, challenging anthropocentric approaches to urban nature and governance.", orbitParentId:"latour" },
+  { id:"thrift2005", author:"Thrift", title:"But malice aforethought: Cities and the natural history o", year:2005, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Examines the affective dimensions of urban life, analysing how hatred and negative affects circulate through cities and are instrumentalised by political actors.", orbitParentId:"latour" },
+  { id:"thrift2004", author:"Thrift", title:"Remembering the technological unconscious by foregroundin", year:2004, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Theorises the \'technological unconscious\' -- the background software and code systems that shape spatial experience without conscious awareness, anticipating smart city critiques.", orbitParentId:"latour" },
+  { id:"gabrys2014", author:"Gabrys", title:"Programming environments: Environmentality and citizen se", year:2014, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Applies Foucauldian \'environmentality\' to smart city sensing technologies, examining how environmental monitoring programmes citizens as sensors and data generators.", orbitParentId:"latour" },
+  { id:"gabrys2016", author:"Gabrys", title:"Program Earth: Environmental Sensing Technology and the M", year:2016, tier:"interlocutor", themes:["Urban AI", "Autonomy"], notes:"Examines how environmental sensing technologies are creating a computational planet, analysing sensor networks, citizen science, and the politics of environmental data.", orbitParentId:"latour" },
+  { id:"jessop2002", author:"Jessop", title:"Liberalism", year:2002, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"State-theoretical analysis of how neoliberal urban governance restructures relationships between state, market, and civil society at the urban scale.", orbitParentId:"lefebvre" },
+  { id:"swyngedouw2005", author:"Swyngedouw", title:"Governance innovation and the citizen: The Janus face of ", year:2005, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"Critiques \'governance-beyond-the-state\' as a democratic deficit, arguing that new governance arrangements may reduce rather than enhance meaningful citizen participation.", orbitParentId:"lefebvre" },
+  { id:"kaika2017", author:"Kaika", title:"Don", year:2017, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"Critiques the resilience discourse in urban policy, arguing it depoliticises structural inequalities and naturalises crisis as something to be endured rather than prevented.", orbitParentId:"lefebvre" },
+  { id:"couldry2019", author:"Couldry", title:"The Costs of Connection: How Data is Colonizing Human Lif", year:2019, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"Develops \'data colonialism\' as a framework for understanding how digital platforms appropriate human life through data extraction, drawing parallels with historical colonialism.", orbitParentId:"lefebvre" },
+  { id:"morozov2013", author:"Morozov", title:"To Save Everything", year:2013, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"Critique of \'technological solutionism\' -- the impulse to reframe complex social issues as technical problems with neat digital solutions, obscuring political and ethical dimensions.", orbitParentId:"lefebvre" },
+  { id:"winner1980", author:"Winner", title:"Do artifacts have politics?", year:1980, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"Foundational STS text arguing that technologies embody political choices and can function as forms of legislation, using the case of Robert Moses\'s bridges to illustrate designed inequality.", orbitParentId:"lefebvre" },
+  { id:"jasanoff2015", author:"Jasanoff", title:"Future imperfect: Science", year:2015, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"From section: Right to the City, Urban Justice, and Foundational Urban Theory", orbitParentId:"lefebvre" },
+  { id:"jasanoff2004", author:"Jasanoff", title:"The idiom of co-production", year:2004, tier:"interlocutor", themes:["Urban Space", "Autonomy"], notes:"Develops the \'co-production\' framework showing how science and social order are mutually constituted, providing a foundational STS concept for analysing technology-governance relationships.", orbitParentId:"lefebvre" },
+  { id:"cresswell2006", author:"Cresswell", title:"On the Move: Mobility in the Modern Western World", year:2006, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Cultural geography of movement exploring how mobility is both practised and represented, examining the politics of who moves, how, and with what consequences.", orbitParentId:"urry" },
+  { id:"elliott2010", author:"Elliott", title:"Mobile Lives", year:2010, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Examines how mobility shapes contemporary identities and social life, from frequent flying to digital nomadism, analysing the \'mobile lives\' of the networked age.", orbitParentId:"urry" },
+  { id:"walks2015", author:"Walks", title:"Stopping the sprawl? Revenue-tools", year:2015, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"From section: Appendix: Cross-Cutting", orbitParentId:"urry" },
+  { id:"dennis2009", author:"Dennis", title:"After the Car", year:2009, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Imagines post-car futures exploring how digital networks, new energy systems, and alternative mobilities could replace automobile dominance in urban transport.", orbitParentId:"urry" },
+  { id:"manderscheid2014", author:"Manderscheid", title:"The movement problem", year:2014, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Applies Foucauldian \'dispositif\' analysis to automobility, examining how car-based mobility functions as a mode of social regulation and spatial governance.", orbitParentId:"urry" },
+  { id:"dodge2005", author:"Dodge", title:"Code and the transduction of space", year:2005, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Theorises how software code \'transduces\' space -- continuously bringing space into being through coded processes -- laying groundwork for understanding algorithmic urbanism.", orbitParentId:"urry" },
+  { id:"zook2017", author:"Zook", title:"Crowd-sourcing the smart city: Using big geosocial media ", year:2017, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Analyses how crowd-sourced geosocial media data is used in urban governance, examining both opportunities and risks of citizen-generated data for smart city management.", orbitParentId:"urry" },
+  { id:"leszczynski2016", author:"Leszczynski", title:"Speculative futures: Cities", year:2016, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Critiques smart urbanism\'s speculative logics, arguing for attention to how data-driven governance anticipates and pre-empts urban futures in problematic ways.", orbitParentId:"urry" },
+  { id:"beer2017", author:"Beer", title:"The social power of algorithms", year:2017, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Examines how algorithms exercise social power by shaping what is visible, accessible, and valued, calling for critical attention to algorithmic agency in everyday life.", orbitParentId:"urry" },
+  { id:"benjamin2019", author:"Benjamin", title:"Race After Technology: Abolitionist Tools for the New Jim", year:2019, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Introduces the \'New Jim Code\' to describe how technologies reinforce racial hierarchies while appearing neutral, calling for abolitionist approaches to technology design.", orbitParentId:"urry" },
+  { id:"oneil2016", author:"O'Neil", title:"Weapons of Math Destruction: How Big Data Increases Inequ", year:2016, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Examines how opaque, unaccountable mathematical models -- \'weapons of math destruction\' -- reinforce inequality in education, employment, insurance, and criminal justice.", orbitParentId:"urry" },
+  { id:"cowen2014", author:"Cowen", title:"The Deadly Life of Logistics: Mapping Violence in Global ", year:2014, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Political geography of logistics examining how global supply chains are built on violence, dispossession, and militarised governance of circulation and mobility.", orbitParentId:"urry" },
+  { id:"bratton2016", author:"Bratton", title:"The Stack: On Software and Sovereignty", year:2016, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Develops \'The Stack\' as a model for understanding planetary-scale computation, from Earth-layer infrastructure through cloud platforms to user interfaces, reconfiguring sovereignty.", orbitParentId:"urry" },
+  { id:"hu2015", author:"Hu", title:"A Prehistory of the Cloud", year:2015, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Historical genealogy of cloud computing tracing its origins from Cold War military networks to contemporary data centres, revealing the material infrastructure behind immaterial metaphors.", orbitParentId:"urry" },
+  { id:"halpern2014", author:"Halpern", title:"Beautiful Data: A History of Vision and Reason since 1945", year:2014, tier:"interlocutor", themes:["Urban Space", "Time & Speed"], notes:"Examines the aesthetics and politics of data visualisation since 1945, tracing how cybernetic rationality transformed the relationship between perception, cognition, and governance.", orbitParentId:"urry" },
+
+];
+
+// ─── LAYOUT ─────────────────────────────────────────────────────────
+const W = window.innerWidth, H = window.innerHeight, minD = Math.min(W, H);
+const themeCircles = Object.entries(themes).map(([name, t]) => ({
+  name, color: t.color, cx: t.cx*W, cy: t.cy*H, r: t.r*minD
+}));
+
+function srand(seed) { let x = Math.sin(seed)*10000; return x - Math.floor(x); }
+
+const foundational = authors.filter(a => a.tier === "foundational");
+const interlocutors = authors.filter(a => a.tier === "interlocutor");
+
+// Place anchor authors at dead-centre of their primary theme
+const anchorIds = Object.values(anchors);
+const groups = {};
+foundational.forEach(a => { const k = a.themes.join("+"); if (!groups[k]) groups[k]=[]; groups[k].push(a); });
+
+foundational.forEach((a, i) => {
+  const rel = themeCircles.filter(c => a.themes.includes(c.name));
+  let cx = rel.reduce((s,c)=>s+c.cx,0)/rel.length;
+  let cy = rel.reduce((s,c)=>s+c.cy,0)/rel.length;
+
+  // Anchors go to dead centre of their primary theme
+  if (a.anchor) {
+    const primary = themeCircles.find(c => c.name === a.themes[0]);
+    // Harvey shares Urban Space anchor with Lefebvre — offset slightly
+    if (a.id === "harvey") {
+      a.x = primary.cx + 45;
+      a.y = primary.cy - 25;
+    } else {
+      a.x = primary.cx;
+      a.y = primary.cy;
+    }
+    return;
+  }
+
+  // Non-anchors spread within their theme region
+  const grp = groups[a.themes.join("+")];
+  const idx = grp.indexOf(a), cnt = grp.length;
+  if (cnt <= 1) {
+    a.x = cx + (srand(i*7+1)-0.5)*60;
+    a.y = cy + (srand(i*13+3)-0.5)*60;
+  } else {
+    const ang = (idx/cnt)*Math.PI*2 + srand(i*3)*0.5;
+    const spr = 40 + cnt*12;
+    a.x = cx + Math.cos(ang)*spr;
+    a.y = cy + Math.sin(ang)*spr;
+  }
+});
+
+// Configure interlocutor orbits
+interlocutors.forEach((a, i) => {
+  const parent = authors.find(f => f.id === a.orbitParentId);
+  if (!parent) return;
+  a.orbitParent = parent;
+
+  const shared = a.themes.filter(t => parent.themes.includes(t)).length;
+  const total = a.themes.length;
+  a.orbitRadius = 55 + (total - shared)*28 + srand(i*31)*22;
+  a.orbitSpeed = 0.10 + srand(i*41)*0.20;
+  if (srand(i*53) > 0.5) a.orbitSpeed *= -1;
+
+  const other = a.themes.filter(t => !parent.themes.includes(t));
+  if (other.length > 0) {
+    const oc = themeCircles.filter(c => other.includes(c.name));
+    a.pullX = (oc.reduce((s,c)=>s+c.cx,0)/oc.length - parent.x) * 0.3;
+    a.pullY = (oc.reduce((s,c)=>s+c.cy,0)/oc.length - parent.y) * 0.3;
+  } else { a.pullX = 0; a.pullY = 0; }
+
+  a.tilt = Math.atan2(a.pullY, a.pullX);
+  a.angle = srand(i*67) * Math.PI * 2;
+  a.x = parent.x; a.y = parent.y;
+});
+
+// ─── RENDER ─────────────────────────────────────────────────────────
+const svg = d3.select("#map-svg"), g = svg.append("g");
+const zoom = d3.zoom().scaleExtent([0.25,4]).on("zoom", e => g.attr("transform", e.transform));
+svg.call(zoom);
+
+// Theme circles
+const circGrp = g.append("g");
+circGrp.selectAll("circle").data(themeCircles).join("circle")
+  .attr("cx",d=>d.cx).attr("cy",d=>d.cy).attr("r",d=>d.r)
+  .attr("fill",d=>d.color).attr("fill-opacity",0.03)
+  .attr("stroke",d=>d.color).attr("stroke-opacity",0.10).attr("stroke-width",1);
+
+circGrp.selectAll("text").data(themeCircles).join("text")
+  .attr("x",d=>d.cx).attr("y",d=>d.cy-d.r+22)
+  .attr("text-anchor","middle").attr("fill",d=>d.color).attr("fill-opacity",0.28)
+  .attr("font-size","11px").attr("font-family","'Space Grotesk',sans-serif")
+  .attr("font-weight",500).attr("letter-spacing","1.5px")
+  .text(d=>d.name.toUpperCase());
+
+// Foundational connections
+const conns = [];
+for (let i=0;i<foundational.length;i++) for (let j=i+1;j<foundational.length;j++) {
+  const sh = foundational[i].themes.filter(t=>foundational[j].themes.includes(t));
+  if (sh.length) conns.push({source:foundational[i],target:foundational[j],shared:sh,strength:sh.length});
+}
+
+const linkGrp = g.append("g");
+linkGrp.selectAll("line.conn").data(conns).join("line").attr("class","conn")
+  .attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+  .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y)
+  .attr("stroke","#fff").attr("stroke-opacity",d=>0.015+d.strength*0.015)
+  .attr("stroke-width",d=>0.3+d.strength*0.3);
+
+// Orbit trail ellipses — dotted lines
+const trailGrp = g.append("g");
+const trailEllipses = {};
+
+interlocutors.forEach((a, i) => {
+  if (!a.orbitParent) return;
+  const p = a.orbitParent;
+  const rx = a.orbitRadius;
+  const pull = Math.sqrt(a.pullX*a.pullX + a.pullY*a.pullY);
+  const ry = rx * Math.max(0.45, 1 - pull/(rx*3));
+  const deg = a.tilt*180/Math.PI;
+  const el = trailGrp.append("ellipse")
+    .attr("cx",p.x+a.pullX*0.5).attr("cy",p.y+a.pullY*0.5)
+    .attr("rx",rx).attr("ry",ry)
+    .attr("transform",`rotate(${deg},${p.x+a.pullX*0.5},${p.y+a.pullY*0.5})`)
+    .attr("fill","none").attr("stroke",themes[a.themes[0]].color)
+    .attr("stroke-opacity",0.06).attr("stroke-width",0.7)
+    .attr("stroke-dasharray","3,8");
+  trailEllipses[a.id] = el;
+});
+
+// Tether lines
+const tetherLines = linkGrp.selectAll("line.tether").data(interlocutors.filter(a=>a.orbitParent)).join("line")
+  .attr("class","tether").attr("stroke",d=>themes[d.themes[0]].color)
+  .attr("stroke-opacity",0.05).attr("stroke-width",0.4);
+
+// Nodes
+const nodeGrp = g.append("g");
+const allA = [...foundational, ...interlocutors];
+
+const nodes = nodeGrp.selectAll("g.node").data(allA,d=>d.id).join("g")
+  .attr("class",d=>`node t-${d.tier}`)
+  .attr("transform",d=>`translate(${d.x},${d.y})`)
+  .style("cursor","pointer")
+  .on("click",(e,d)=>{ e.stopPropagation(); openPanel(d); highlightNode(d); })
+  .on("mouseenter",(e,d)=>{
+    const c=d.tier==="foundational";
+    d3.select(e.currentTarget).select(".glow").transition().duration(200).attr("r",c?28:18).attr("fill-opacity",c?0.22:0.16);
+    d3.select(e.currentTarget).select(".core").transition().duration(200).attr("r",c?10:6);
+    // Brighten orbit trail
+    if (trailEllipses[d.id]) trailEllipses[d.id].transition().duration(200).attr("stroke-opacity",0.25).attr("stroke-width",1.2);
+    // If foundational, brighten all children orbits
+    if (d.tier==="foundational") {
+      interlocutors.filter(a=>a.orbitParent&&a.orbitParent.id===d.id).forEach(a=>{
+        if(trailEllipses[a.id]) trailEllipses[a.id].transition().duration(200).attr("stroke-opacity",0.18).attr("stroke-width",1);
+      });
+    }
+  })
+  .on("mouseleave",(e,d)=>{
+    const c=d.tier==="foundational";
+    d3.select(e.currentTarget).select(".glow").transition().duration(300).attr("r",c?24:14).attr("fill-opacity",c?0.10:0.06);
+    d3.select(e.currentTarget).select(".core").transition().duration(300).attr("r",c?8:4);
+    if (trailEllipses[d.id]) trailEllipses[d.id].transition().duration(300).attr("stroke-opacity",0.06).attr("stroke-width",0.7);
+    if (d.tier==="foundational") {
+      interlocutors.filter(a=>a.orbitParent&&a.orbitParent.id===d.id).forEach(a=>{
+        if(trailEllipses[a.id]) trailEllipses[a.id].transition().duration(300).attr("stroke-opacity",0.06).attr("stroke-width",0.7);
+      });
+    }
+  });
+
+// Anchor pulse ring
+nodes.filter(d=>d.anchor).append("circle").attr("class","anchor-pulse")
+  .attr("fill",d=>themes[d.themes[0]].color)
+  .attr("fill-opacity",0.08).attr("r",12)
+  .style("animation","anchorPulse 3s ease-in-out infinite");
+
+// Glow
+nodes.append("circle").attr("class","glow")
+  .attr("r",d=>d.tier==="foundational"?24:14)
+  .attr("fill",d=>themes[d.themes[0]].color)
+  .attr("fill-opacity",d=>d.tier==="foundational"?0.10:0.06);
+
+// Core
+nodes.append("circle").attr("class","core")
+  .attr("r",d=>d.tier==="foundational"?8:4)
+  .attr("fill",d=>themes[d.themes[0]].color)
+  .attr("fill-opacity",d=>d.tier==="foundational"?0.95:0.7);
+
+// Multi-theme rings
+nodes.filter(d=>d.themes.length>1&&d.tier==="foundational").append("circle")
+  .attr("r",13).attr("fill","none").attr("stroke",d=>themes[d.themes[1]].color)
+  .attr("stroke-opacity",0.4).attr("stroke-width",1.5).attr("stroke-dasharray","3,3");
+
+nodes.filter(d=>d.themes.length>1&&d.tier==="interlocutor").append("circle")
+  .attr("r",8).attr("fill","none").attr("stroke",d=>themes[d.themes[1]].color)
+  .attr("stroke-opacity",0.3).attr("stroke-width",1).attr("stroke-dasharray","2,3");
+
+// Labels — first author surname only
+nodes.append("text").attr("dy",d=>d.tier==="foundational"?28:20)
+  .attr("text-anchor","middle")
+  .attr("fill","#fff").attr("fill-opacity",d=>d.tier==="foundational"?0.80:0.42)
+  .attr("font-size",d=>d.tier==="foundational"?"11px":"9px")
+  .attr("font-family","'Inter',sans-serif")
+  .attr("font-weight",d=>d.tier==="foundational"?500:300)
+  .text(d => {
+    // Always use the first author's surname
+    const firstAuthor = d.author.split(/\s*[&,]\s*/)[0].trim();
+    const parts = firstAuthor.split(" ");
+    return parts[parts.length - 1];
+  });
+
+// ─── ORBITAL ANIMATION ──────────────────────────────────────────────
+let animOn = true, lt = performance.now();
+
+function tick(now) {
+  if (animOn) {
+    const dt = Math.min((now-lt)/1000, 0.1);
+    interlocutors.forEach(a => {
+      if (!a.orbitParent) return;
+      const p = a.orbitParent;
+      a.angle += a.orbitSpeed * dt;
+      const rx = a.orbitRadius;
+      const pull = Math.sqrt(a.pullX*a.pullX+a.pullY*a.pullY);
+      const ry = rx * Math.max(0.45, 1 - pull/(rx*3));
+      const ct=Math.cos(a.tilt),st=Math.sin(a.tilt);
+      const ca=Math.cos(a.angle),sa=Math.sin(a.angle);
+      const lx=rx*ca, ly=ry*sa;
+      a.x = p.x + a.pullX*0.5 + lx*ct - ly*st;
+      a.y = p.y + a.pullY*0.5 + lx*st + ly*ct;
+    });
+    nodes.filter(d=>d.tier==="interlocutor").attr("transform",d=>`translate(${d.x},${d.y})`);
+    tetherLines.attr("x1",d=>d.x).attr("y1",d=>d.y).attr("x2",d=>d.orbitParent.x).attr("y2",d=>d.orbitParent.y);
+  }
+  lt = now;
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function toggleAnimation() {
+  animOn = !animOn; lt = performance.now();
+  document.getElementById("pause-btn").textContent = animOn ? "Pause orbits" : "Resume orbits";
+}
+
+// ─── PANEL ──────────────────────────────────────────────────────────
+let activeNode = null;
+
+function openPanel(d) {
+  activeNode = d;
+  const panel = document.getElementById("detail-panel");
+  const content = document.getElementById("panel-content");
+  const tags = d.themes.map(t=>`<span class="theme-tag" style="background:${themes[t].color}22;color:${themes[t].color};border:1px solid ${themes[t].color}44;">${t}</span>`).join("");
+  const tier = d.tier==="foundational"
+    ? (d.anchor ? '<div class="tier-tag foundational">Anchor Text</div>' : '<div class="tier-tag foundational">Foundational Text</div>')
+    : '<div class="tier-tag">Interlocutor</div>';
+  const field = d.field?`<div class="field-tag">${d.field}</div>`:'';
+  const yr = d.year?` (${d.year})`:'';
+
+  const related = authors.filter(a=>a.id!==d.id&&a.themes.some(t=>d.themes.includes(t)));
+  related.sort((a,b)=>{ if(a.tier!==b.tier) return a.tier==="foundational"?-1:1; return b.themes.filter(t=>d.themes.includes(t)).length - a.themes.filter(t=>d.themes.includes(t)).length; });
+
+  const connList = related.slice(0,15).map(a=>{
+    const badge = a.tier==="interlocutor"?'<span class="conn-tier">interlocutor</span>':'';
+    const t = a.year?`${a.title} (${a.year})`:a.field||a.title;
+    return `<div class="connection-item" onclick="navigateTo('${a.id}')">${a.author} — <em>${t}</em>${badge}</div>`;
+  }).join("");
+
+  content.innerHTML = `${tags}<br/>${tier}<div class="author-name">${d.author}</div>${field}<div class="work-title">${d.title}${yr}</div><div class="notes">${d.notes}</div><div class="connections"><h3>Connected works</h3>${connList}</div>`;
+  panel.classList.add("open");
+}
+
+function closePanel() {
+  document.getElementById("detail-panel").classList.remove("open");
+  activeNode = null;
+  nodes.transition().duration(300).attr("opacity",1);
+  linkGrp.selectAll("line.conn").transition().duration(300).attr("stroke-opacity",d=>0.015+d.strength*0.015);
+  tetherLines.transition().duration(300).attr("stroke-opacity",0.05);
+  Object.values(trailEllipses).forEach(el=>el.transition().duration(300).attr("stroke-opacity",0.06).attr("stroke-width",0.7));
+}
+
+function highlightNode(d) {
+  const rel = new Set([d.id]);
+  conns.forEach(c=>{ if(c.source.id===d.id) rel.add(c.target.id); if(c.target.id===d.id) rel.add(c.source.id); });
+  if (d.orbitParent) rel.add(d.orbitParent.id);
+  interlocutors.forEach(a=>{ if(a.orbitParent&&a.orbitParent.id===d.id) rel.add(a.id); });
+
+  nodes.transition().duration(300).attr("opacity",a=>rel.has(a.id)?1:0.08);
+  linkGrp.selectAll("line.conn").transition().duration(300).attr("stroke-opacity",l=>(l.source.id===d.id||l.target.id===d.id)?0.35:0.003);
+  tetherLines.transition().duration(300).attr("stroke-opacity",l=>(l.id===d.id||(l.orbitParent&&l.orbitParent.id===d.id))?0.3:0.008);
+
+  // Highlight orbit trails for this node and children
+  Object.entries(trailEllipses).forEach(([id, el]) => {
+    if (id === d.id || interlocutors.find(a=>a.id===id&&a.orbitParent&&a.orbitParent.id===d.id)) {
+      el.transition().duration(300).attr("stroke-opacity",0.22).attr("stroke-width",1);
+    } else {
+      el.transition().duration(300).attr("stroke-opacity",0.015).attr("stroke-width",0.4);
+    }
+  });
+}
+
+function navigateTo(id) {
+  const a = authors.find(x=>x.id===id);
+  if (!a) return;
+  openPanel(a); highlightNode(a);
+  svg.transition().duration(750).call(zoom.transform,
+    d3.zoomIdentity.translate(W/2,H/2).scale(1.8).translate(-a.x,-a.y));
+}
+
+svg.on("click",()=>closePanel());
+
+// ─── LEGEND ─────────────────────────────────────────────────────────
+const legEl = document.getElementById("legend");
+let activeFilt = null;
+
+Object.entries(themes).forEach(([name,t])=>{
+  const item = document.createElement("div");
+  item.className = "legend-item";
+  item.innerHTML = `<div class="legend-dot" style="background:${t.color}"></div>${name}`;
+  item.addEventListener("click",()=>{
+    if (activeFilt===name) {
+      activeFilt=null;
+      document.querySelectorAll(".legend-item").forEach(el=>el.classList.remove("dimmed"));
+      nodes.transition().duration(300).attr("opacity",1);
+      circGrp.selectAll("circle").transition().duration(300).attr("fill-opacity",0.03).attr("stroke-opacity",0.10);
+      linkGrp.selectAll("line.conn").transition().duration(300).attr("stroke-opacity",d=>0.015+d.strength*0.015);
+      tetherLines.transition().duration(300).attr("stroke-opacity",0.05);
+      Object.values(trailEllipses).forEach(el=>el.transition().duration(300).attr("stroke-opacity",0.06).attr("stroke-width",0.7));
+    } else {
+      activeFilt=name;
+      document.querySelectorAll(".legend-item").forEach(el=>el.classList.toggle("dimmed",!el.textContent.includes(name)));
+      nodes.transition().duration(300).attr("opacity",d=>d.themes.includes(name)?1:0.05);
+      circGrp.selectAll("circle").transition().duration(300).attr("fill-opacity",d=>d.name===name?0.07:0.01).attr("stroke-opacity",d=>d.name===name?0.25:0.03);
+      linkGrp.selectAll("line.conn").transition().duration(300).attr("stroke-opacity",d=>d.shared.includes(name)?0.2:0.002);
+      tetherLines.transition().duration(300).attr("stroke-opacity",d=>d.themes.includes(name)?0.15:0.008);
+      Object.entries(trailEllipses).forEach(([id, el])=>{
+        const a = authors.find(x=>x.id===id);
+        el.transition().duration(300)
+          .attr("stroke-opacity",a&&a.themes.includes(name)?0.15:0.01)
+          .attr("stroke-width",a&&a.themes.includes(name)?0.9:0.3);
+      });
+    }
+  });
+  legEl.appendChild(item);
+});
+
+// ─── ENTRANCE ───────────────────────────────────────────────────────
+circGrp.selectAll("circle").attr("fill-opacity",0).attr("stroke-opacity",0).transition().delay((_,i)=>i*100).duration(800).attr("fill-opacity",0.03).attr("stroke-opacity",0.10);
+circGrp.selectAll("text").attr("fill-opacity",0).transition().delay((_,i)=>i*100+200).duration(600).attr("fill-opacity",0.28);
+nodes.attr("opacity",0).transition().delay((d,i)=>d.anchor?i*50:d.tier==="foundational"?300+i*50:900+i*35).duration(500).attr("opacity",1);
+linkGrp.selectAll("line").attr("stroke-opacity",0).transition().delay(1200).duration(600).attr("stroke-opacity",function(d){ return d.strength!==undefined?0.015+d.strength*0.015:0.05; });
+trailGrp.selectAll("ellipse").attr("stroke-opacity",0).transition().delay(1400).duration(600).attr("stroke-opacity",0.06);
+
+// ─── THEME TOGGLE ──────────────────────────────────────────────────
+(function() {
+  const html = document.documentElement;
+  const cb = document.getElementById('galaxy-color-mode');
+  if (!cb) return;
+  cb.checked = html.classList.contains('light');
+
+  function applyTheme() {
+    const isLight = html.classList.contains('light');
+    const labelColor = isLight ? '#222' : '#fff';
+    const labelOpacity = isLight ? 0.55 : 0.28;
+    const circleFill = isLight ? 0.06 : 0.03;
+    const circleStroke = isLight ? 0.18 : 0.10;
+    const connBaseOpacity = isLight ? 0.04 : 0.015;
+    const connStrengthMult = isLight ? 0.04 : 0.015;
+    const tetherOpacity = isLight ? 0.10 : 0.05;
+    const trailOpacity = isLight ? 0.12 : 0.06;
+    const foundLabelOpacity = isLight ? 0.90 : 0.80;
+    const intLabelOpacity = isLight ? 0.60 : 0.42;
+
+    // Theme circle labels
+    circGrp.selectAll("text")
+      .transition().duration(400)
+      .attr("fill-opacity", labelOpacity);
+
+    // Theme circles
+    circGrp.selectAll("circle")
+      .transition().duration(400)
+      .attr("fill-opacity", circleFill)
+      .attr("stroke-opacity", circleStroke);
+
+    // Node labels
+    nodes.selectAll("text")
+      .transition().duration(400)
+      .attr("fill", labelColor)
+      .attr("fill-opacity", d => d.tier === "foundational" ? foundLabelOpacity : intLabelOpacity);
+
+    // Connection lines
+    linkGrp.selectAll("line.conn")
+      .transition().duration(400)
+      .attr("stroke", isLight ? '#000' : '#fff')
+      .attr("stroke-opacity", d => connBaseOpacity + d.strength * connStrengthMult);
+
+    // Tether lines
+    tetherLines.transition().duration(400).attr("stroke-opacity", tetherOpacity);
+
+    // Trail ellipses
+    trailGrp.selectAll("ellipse").transition().duration(400).attr("stroke-opacity", trailOpacity);
+  }
+
+  cb.addEventListener('change', function() {
+    html.classList.toggle('light', this.checked);
+    localStorage.setItem('theme', this.checked ? 'light' : 'dark');
+    applyTheme();
+  });
+
+  // Apply on load if light
+  if (html.classList.contains('light')) {
+    setTimeout(applyTheme, 1800); // after entrance animations
+  }
+})();
+</script>
+</body>
+</html>
