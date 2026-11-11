@@ -7,208 +7,182 @@
   <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="favicon.png" type="image/png">
+  <script src="theme.js"></script>
   <style>
-    /* Reset and base styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Spectral', serif;
-      line-height: 1.6;
-      color: #f5f5f5;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-      background-color: #2a2a2a;
-    }
-
-    h1, h2, h3 {
-      font-family: 'Spectral', serif;
-      font-weight: 500;
-      margin: 1.5rem 0 1rem 0;
-      color: #ffffff;
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      margin-top: 2rem;
-      text-align: center;
-    }
-    
-    h2 {
-      font-size: 1.8rem;
-      margin-top: 2.5rem;
-      border-bottom: 1px solid #a490ff;
-      padding-bottom: 0.5rem;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    
-    h3 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-    }
-    
-    p {
-      margin-bottom: 1.5rem;
-      font-size: 1.1rem;
-      font-weight: 300;
-    }
-
-    /* Navigation */
-    nav {
-      display: flex;
-      justify-content: center;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid #a490ff;
-      margin-bottom: 1.5rem;
-    }
-    
-    nav a {
-      text-decoration: none;
-      color: #cccccc;
-      margin: 0 1.5rem;
-      font-size: 1.1rem;
-      transition: color 0.2s ease;
-    }
-    
-    nav a:hover {
-      color: #ffffff;
-      border-bottom: 2px solid #a490ff;
-    }
-    
-    /* Projects container */
-    .projects-container {
-      max-width: 600px;
-      margin: 3rem auto;
-      text-align: center;
-    }
-
-    .project-item {
-      margin-bottom: 3rem;
-      padding: 2rem;
-      border-radius: 8px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      background-color: rgba(164, 144, 255, 0.05);
-    }
-
-    .project-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(164, 144, 255, 0.15);
-    }
-
-    .project-item a {
-      color: #f5f5f5;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .project-item a:hover {
-      color: #a490ff;
-    }
-
-    /* Track widgets */
     .tracks-container {
       max-width: 680px;
-      margin: 2rem auto;
+      margin: 2rem auto 4rem auto;
     }
 
     .track-widget {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
     }
 
     .track-widget iframe {
       border-radius: 6px;
       display: block;
+      width: 100%;
     }
 
-    /* Responsive styles */
     @media (max-width: 768px) {
-      body {
-        padding: 0 15px;
-      }
-
-      nav a {
-        margin: 0 0.8rem;
-        font-size: 1rem;
-      }
-
-      h1 {
-        font-size: 2rem;
+      .tracks-container {
+        margin: 1.5rem auto 3rem auto;
       }
     }
   </style>
 </head>
 <body>
-
-  <!-- Navigation Bar -->
-  <nav>
-    <a href="index.html">home</a>
-    <a href="research.html">research</a>
-    <a href="contact.html">contact</a>
-    <a href="other.html">other</a>
-  </nav>
-
-  <h1>Other</h1>
-
-  <h2>Mixes</h2>
-
-  <div class="tracks-container">
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/lizard-tape&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/callcard-premium&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/musclememory&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/gold-chain-my-neck&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/summer-holidays-fm-manic&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/gold-chain-no-neck-tomorrow-in-1952&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/tiarnai-tuata-screaptra-clainne&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/music-to-listen-to-after-the-past&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/siorai&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
-    <div class="track-widget">
-      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/dreamers-well&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
-    </div>
-
+  <div class="toggle-switch">
+    <input type="checkbox" id="color-mode" class="toggle-checkbox">
+    <label for="color-mode" class="toggle-label"></label>
   </div>
 
+  <div class="page-content">
+    <nav>
+      <a href="index.html">home</a>
+      <a href="research.html">research</a>
+      <a href="literature-map.html">literature galaxy</a>
+      <a href="contact.html">contact</a>
+      <a href="other.html">other</a>
+    </nav>
+
+    <h1>Other</h1>
+
+    <h2>Mixes</h2>
+
+    <div class="tracks-container">
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/lizard-tape&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/callcard-premium&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/musclememory&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/gold-chain-my-neck&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/summer-holidays-fm-manic&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/gold-chain-no-neck-tomorrow-in-1952&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/tiarnai-tuata-screaptra-clainne&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/music-to-listen-to-after-the-past&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/siorai&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/dreamers-well&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/ellesmera-3&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/resting-no-sleep&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/breactha&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/music-to-endure-to&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/cianobair7iochtarreoite&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/ponxi-x-screamhound-ep22-total-rx&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/g-tec-c4-friendship-archive&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/tuisle&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/firnenfriend&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/lonely-motorway-mix&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/music-to-deteriorate-to&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/ecoraytheon26&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/music-to-listen-to-after-no-future&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/ahkycwitk7gl&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/urbanspacetimemix&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+      <div class="track-widget">
+        <iframe height="166" scrolling="no" frameborder="no" allow="autoplay"
+          src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/frmrhnd/levitiracedreaming&color=%23a490ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
+      </div>
+
+    </div>
+  </div>
 </body>
 </html>
